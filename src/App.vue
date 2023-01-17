@@ -21,7 +21,7 @@
         ><v-icon>mdi-target-account</v-icon></v-btn
       >
     </v-card>
-    <div>
+    <div class="d-flex flex-wrap">
       <v-row style="width: 50%" class="ma-2" v-if="caseAjouterJoueur">
         <v-text-field v-model="nomJ" label="Nom" class="mx-2"></v-text-field>
         <v-text-field
@@ -40,7 +40,7 @@
           ><v-icon>mdi-plus</v-icon></v-btn
         >
       </v-row>
-      <div v-for="(unJoueur, j) in joueur" :key="j + 'J'" style="width: 50%">
+      <div v-for="(unJoueur, j) in joueur" :key="j + 'J'" style="width: 50%" class="d-flex justify-center">
         <v-card :color="unJoueur.couleur.fond" width="500px" class="ml-2 mt-2">
           <v-card-title>
             <div>{{ unJoueur.nom }}</div>
@@ -78,14 +78,13 @@
                 :color="unJoueur.couleur.case"
               >
                 <div>MP: {{ unJoueur.MP }}/{{ unJoueur.MPMax }}</div>
-                  <v-text-field
-                    style="width: 30px"
-                    v-model="calculeMP"
-                    hide-details
-                    class="ma-0 pa-0 ml-1"
-                    @change="calculerLesMP(j)"
-                  ></v-text-field>
-                
+                <v-text-field
+                  style="width: 30px"
+                  v-model="calculeMP"
+                  hide-details
+                  class="ma-0 pa-0 ml-1"
+                  @change="calculerLesMP(j)"
+                ></v-text-field>
               </v-card>
             </div>
             <div>
@@ -198,6 +197,58 @@ export default {
         fond: "deep-purple lighten-1",
         case: "deep-purple lighten-5",
       },
+      {
+        fond: "indigo lighten-1",
+        case: "indigo lighten-5",
+      },
+      {
+        fond: "blue lighten-1",
+        case: "blue lighten-5",
+      },
+      {
+        fond: "light-blue lighten-1",
+        case: "light-blue lighten-5",
+      },
+      {
+        fond: "cyan lighten-1",
+        case: "cyan lighten-5",
+      },
+      {
+        fond: "teal lighten-1",
+        case: "teal lighten-5",
+      },
+      {
+        fond: "green lighten-1",
+        case: "green lighten-5",
+      },
+      {
+        fond: "light-green lighten-1",
+        case: "light-green lighten-5",
+      },
+      {
+        fond: "lime lighten-1",
+        case: "lime lighten-5",
+      },
+      {
+        fond: "yellow lighten-1",
+        case: "yellow lighten-5",
+      },
+      {
+        fond: "amber lighten-1",
+        case: "amber lighten-5",
+      },
+      {
+        fond: "orange lighten-1",
+        case: "orange lighten-5",
+      },
+      {
+        fond: "deep-orange lighten-1",
+        case: "deep-orange lighten-5",
+      },
+      {
+        fond: "blue-grey lighten-1",
+        case: "blue-grey lighten-5",
+      },
     ],
   }),
   methods: {
@@ -218,7 +269,7 @@ export default {
       this.caseAjouterJoueur = false;
     },
     choisiCouleur() {
-      return this.listeCouleur[Math.floor(Math.random() * 4)];
+      return this.listeCouleur[Math.floor(Math.random() * 17)];
     },
     supprimerJoueur(index) {
       this.joueur.splice(index, 1);
@@ -243,7 +294,27 @@ export default {
       this.descripStatus = "";
       leJoueur.ajouterStatus = false;
     },
-    ajouterTour() {},
+    ajouterTour() {
+      this.NTour += 1;
+      for (const unJoueur of this.joueur) {
+        let i = 0;
+        for (const unStatus of unJoueur.status) {
+          unStatus.tourRestant -= 1;
+          const leStatus = unStatus.effetStatus.split(" ");
+          if (leStatus[1].toUpperCase() == "PV") {
+            unJoueur.PV = unJoueur.PV * 1;
+            unJoueur.PV += leStatus[0] * 1;
+          } else if (leStatus[1].toUpperCase() == "MP") {
+            unJoueur.MP = unJoueur.MP * 1;
+            unJoueur.MP += leStatus[0] * 1;
+          }
+          if (unStatus.tourRestant <= 0) {
+            unJoueur.status.splice(i, 1);
+          }
+          i++;
+        }
+      }
+    },
     renitialiserTour() {
       this.NTour = 1;
     },
