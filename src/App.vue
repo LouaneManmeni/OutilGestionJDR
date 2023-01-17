@@ -17,8 +17,8 @@
           ><v-icon>mdi-refresh</v-icon></v-btn
         >
       </div>
-      <v-btn icon color="black" @click="caseAjouterEnnemi = true"
-        ><v-icon>mdi-target-account</v-icon></v-btn
+      <v-btn icon color="black" @click="caseAjouterJoueur = true"
+        ><v-icon>mdi-account-plus</v-icon></v-btn
       >
     </v-card>
     <div class="d-flex flex-wrap">
@@ -167,7 +167,6 @@ export default {
 
   data: () => ({
     caseAjouterJoueur: false,
-    caseAjouterEnnemi: false,
     joueur: [],
     nomJ: "",
     PVJ: "",
