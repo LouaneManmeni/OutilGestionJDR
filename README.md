@@ -1,4 +1,4 @@
-# aidejdr
+# aide
 
 ## Project setup
 ```

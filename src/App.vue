@@ -1,330 +1,348 @@
 <template>
   <v-app>
     <v-card
-      color="primary"
-      height="50px"
-      class="text-h4 d-flex align-center justify-space-around"
+      style="height: 50px"
+      color="purple lighten-5"
+      class="d-flex align-center justify-space-between"
     >
-      <v-btn icon color="black" @click="caseAjouterJoueur = true">
+      <v-btn icon @click="ouvrirDialogueAjoutEntiter(true)" class="ml-5">
         <v-icon>mdi-account-plus</v-icon>
       </v-btn>
-      <div class="mt-1 d-flex">
-        <div>N° tour: {{ NTour }}</div>
-        <v-btn icon color="black" @click="ajouterTour()">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-        <v-btn icon color="black" @click="renitialiserTour()"
-          ><v-icon>mdi-refresh</v-icon></v-btn
-        >
+      <div class="d-flex align-center">
+        <div>Tour: {{ numTour }}</div>
+        <v-btn icon><v-icon>mdi-plus</v-icon></v-btn>
+        <v-btn icon><v-icon>mdi-refresh</v-icon></v-btn>
       </div>
-      <v-btn icon color="black" @click="caseAjouterJoueur = true"
-        ><v-icon>mdi-account-plus</v-icon></v-btn
-      >
+      <v-btn icon @click="ouvrirDialogueAjoutEntiter(false)" class="mr-5">
+        <v-icon>mdi-virus-outline</v-icon>
+      </v-btn>
     </v-card>
-    <div class="d-flex flex-wrap">
-      <v-row style="width: 50%" class="ma-2" v-if="caseAjouterJoueur">
-        <v-text-field v-model="nomJ" label="Nom" class="mx-2"></v-text-field>
-        <v-text-field
-          v-model="PVJ"
-          label="PV"
-          class="mx-2"
-          type="number"
-        ></v-text-field>
-        <v-text-field
-          v-model="MPJ"
-          label="MP"
-          class="mx-2"
-          type="number"
-        ></v-text-field>
-        <v-btn @click="ajouterJoueur()" color="green" class="mt-3"
-          ><v-icon>mdi-plus</v-icon></v-btn
-        >
-      </v-row>
-      <div v-for="(unJoueur, j) in joueur" :key="j + 'J'" style="width: 50%" class="d-flex justify-center">
-        <v-card :color="unJoueur.couleur.fond" width="500px" class="ml-2 mt-2">
+    <v-main>
+      <div class="d-flex">
+        <div class="ma-2 d-flex justify-center align-center" style="width: 50%">
+          <v-card
+            v-for="(unJoueur, j) in joueurs"
+            :key="j + 'unJoueur'"
+            :color="unJoueur.getCouleur().getFond()"
+            class="ma-1"
+            min-width="10px"
+            min-height="10px"
+          >
+            <v-card-title class="pb-0 d-flex justify-center">{{
+              unJoueur.getNom()
+            }}</v-card-title>
+            <v-card-text>
+              <div class="d-flex align-center font-weight-black black--text">
+                <div class="d-flex mr-2">
+                  <div class="mt-3">
+                    Pv: {{ unJoueur.getPV() }} / {{ unJoueur.getPvMax() }}
+                  </div>
+                  <v-text-field
+                    style="width: 40px"
+                    type="number"
+                    hide-details
+                    class="mt-0 pt-0 ml-1"
+                    :color="unJoueur.getCouleur().getCase()"
+                  ></v-text-field>
+                </div>
+                <div class="d-flex align-center font-weight-black black--text">
+                  <div class="mt-3">
+                    Mp: {{ unJoueur.getMP() }} / {{ unJoueur.getMpMax() }}
+                  </div>
+                  <v-text-field
+                    style="width: 40px"
+                    type="number"
+                    hide-details
+                    class="mt-0 pt-0 ml-1"
+                    :color="unJoueur.getCouleur().getCase()"
+                  ></v-text-field>
+                </div>
+              </div>
+              <div class="font-weight-black black--text">
+                Status:
+                <v-btn
+                  icon
+                  :color="unJoueur.getCouleur().getCase()"
+                  @click="ouvrirDialogueStatus(unJoueur)"
+                >
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <div class="d-flex flex-wrap">
+                  <v-card
+                    v-for="(unStatus, s) in unJoueur.getStatus()"
+                    :key="s + 'lestatus' + j"
+                    class="ma-1"
+                  >
+                    <v-card-title class="pb-0">{{
+                      unStatus.getNom()
+                    }}</v-card-title>
+                    <v-card-text class="font-weight-black black--text">
+                      <div>Durée: {{ unStatus.getDuree() }}</div>
+                      <div>
+                        Effet:
+                        {{
+                          unStatus.getEffet() <= 0
+                            ? unStatus.getEffet()
+                            : "+" + unStatus.getEffet()
+                        }}
+                        {{
+                          unStatus.getTypePvMp() == "p"
+                            ? "Pv"
+                            : unStatus.getTypePvMp() == "m"
+                            ? "Mp"
+                            : ""
+                        }}
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
+        <div class="ma-2 d-flex justify-center align-center" style="width: 50%">
+          <v-card
+            v-for="(unJoueur, j) in ennemis"
+            :key="j + 'unJoueur'"
+            :color="unJoueur.getCouleur().getFond()"
+            class="ma-1"
+            min-width="10px"
+            min-height="10px"
+          >
+            <v-card-title class="pb-0 d-flex justify-center">{{
+              unJoueur.getNom()
+            }}</v-card-title>
+            <v-card-text>
+              <div class="d-flex align-center font-weight-black black--text">
+                <div class="d-flex mr-2">
+                  <div class="mt-3">
+                    Pv: {{ unJoueur.getPV() }} / {{ unJoueur.getPvMax() }}
+                  </div>
+                  <v-text-field
+                    style="width: 40px"
+                    type="number"
+                    hide-details
+                    class="mt-0 pt-0 ml-1"
+                    :color="unJoueur.getCouleur().getCase()"
+                  ></v-text-field>
+                </div>
+                <div class="d-flex align-center font-weight-black black--text">
+                  <div class="mt-3">
+                    Mp: {{ unJoueur.getMP() }} / {{ unJoueur.getMpMax() }}
+                  </div>
+                  <v-text-field
+                    style="width: 40px"
+                    type="number"
+                    hide-details
+                    class="mt-0 pt-0 ml-1"
+                    :color="unJoueur.getCouleur().getCase()"
+                  ></v-text-field>
+                </div>
+              </div>
+              <div class="font-weight-black black--text">
+                Status:
+                <v-btn
+                  icon
+                  :color="unJoueur.getCouleur().getCase()"
+                  @click="ouvrirDialogueStatus(unJoueur)"
+                >
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+                <div class="d-flex flex-wrap">
+                  <v-card
+                    v-for="(unStatus, s) in unJoueur.getStatus()"
+                    :key="s + 'lestatus' + j"
+                    class="ma-1"
+                  >
+                    <v-card-title class="pb-0">{{
+                      unStatus.getNom()
+                    }}</v-card-title>
+                    <v-card-text class="font-weight-black black--text">
+                      <div>Durée: {{ unStatus.getDuree() }}</div>
+                      <div>
+                        Effet:
+                        {{
+                          unStatus.getEffet() <= 0
+                            ? unStatus.getEffet()
+                            : "+" + unStatus.getEffet()
+                        }}
+                        {{
+                          unStatus.getTypePvMp() == "p"
+                            ? "Pv"
+                            : unStatus.getTypePvMp() == "m"
+                            ? "Mp"
+                            : ""
+                        }}
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+        </div>
+      </div>
+
+      <v-dialog max-width="400" v-model="dialogueAjoutEntiter">
+        <v-card>
           <v-card-title>
-            <div>{{ unJoueur.nom }}</div>
-            <v-btn
-              @click="ouvrirAjouterStatusJoueur(j)"
-              :color="unJoueur.couleur.case"
-              icon
-              ><v-icon>mdi-bottle-tonic-plus-outline</v-icon>
-            </v-btn>
+            <div>Nouveau joueur</div>
             <v-spacer></v-spacer>
-            <v-btn
-              icon
-              :color="unJoueur.couleur.case"
-              @click="supprimerJoueur(j)"
-              ><v-icon>mdi-close</v-icon></v-btn
-            >
+            <v-btn icon color="error" @click="fermerDialogueAjoutEntiter()">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
           </v-card-title>
           <v-card-text>
-            <div class="d-flex justify-space-around">
-              <v-card
-                class="text-h6 pa-2 d-flex"
-                :color="unJoueur.couleur.case"
-              >
-                <div>PV: {{ unJoueur.PV }}/{{ unJoueur.PVMax }}</div>
-                <v-text-field
-                  style="width: 30px"
-                  v-model="calculePV"
-                  hide-details
-                  class="ma-0 pa-0 ml-1"
-                  @change="calculerLesPV(j)"
-                ></v-text-field>
-              </v-card>
-              <v-card
-                class="text-h6 pa-2 d-flex"
-                :color="unJoueur.couleur.case"
-              >
-                <div>MP: {{ unJoueur.MP }}/{{ unJoueur.MPMax }}</div>
-                <v-text-field
-                  style="width: 30px"
-                  v-model="calculeMP"
-                  hide-details
-                  class="ma-0 pa-0 ml-1"
-                  @change="calculerLesMP(j)"
-                ></v-text-field>
-              </v-card>
+            <v-text-field label="Nom" v-model="uneEntiter.nom"></v-text-field>
+            <div class="d-flex">
+              <v-text-field
+                v-model="uneEntiter.pvMax"
+                label="Pv"
+                type="number"
+                hide-details
+                class="ma-1"
+              ></v-text-field>
+              <v-text-field
+                v-model="uneEntiter.mpMax"
+                label="Mp"
+                type="number"
+                hide-details
+                class="ma-1"
+              ></v-text-field>
             </div>
-            <div>
-              <v-card
-                v-for="(unStatus, s) in unJoueur.status"
-                :key="s + 'S'"
-                :color="unJoueur.couleur.case"
-                class="mt-3"
-              >
-                <v-card-title>
-                  {{ unStatus.nomStatus }}
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    icon
-                    :color="unJoueur.couleur.fond"
-                    @click="supprimerStatus(s)"
-                    ><v-icon>mdi-close</v-icon></v-btn
-                  >
-                </v-card-title>
-                <v-card-text>
-                  <div class="text-h6">
-                    {{ unStatus.effetStatus }}/{{ unStatus.tourRestant }}T
-                  </div>
-                  <div>{{ unStatus.descripStatus }}</div>
-                </v-card-text>
-              </v-card>
-            </div>
-            <div v-if="unJoueur.ajouterStatus == true">
-              <v-row no-gutters class="ml-2">
-                <v-col cols="4">
-                  <v-text-field
-                    v-model="nomStatus"
-                    label="Nom status"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    class="mx-2"
-                    v-model="effetStatus"
-                    label="Effet"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="4">
-                  <v-text-field
-                    class="mx-2"
-                    v-model="tourStatus"
-                    label="Tour"
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row no-gutters>
-                <v-col cols="11">
-                  <v-text-field
-                    class="mx-2"
-                    v-model="descripStatus"
-                    label="Descriptif"
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="1">
-                  <v-btn
-                    @click="ajouterStatus(j)"
-                    :color="unJoueur.couleur.case"
-                    class="mt-5"
-                    icon
-                    ><v-icon>mdi-plus</v-icon></v-btn
-                  >
-                </v-col>
-              </v-row>
-            </div>
+            <v-btn
+              color="purple lighten-5"
+              class="mt-2"
+              @click="enregistrerEntiter()"
+            >
+              Enregistrer
+            </v-btn>
           </v-card-text>
         </v-card>
-      </div>
-    </div>
+      </v-dialog>
+
+      <v-dialog v-model="dialogueAjouterStatus" width="400px">
+        <v-card>
+          <v-card-title class="pb-0">
+            <div>Nouveau Status</div>
+            <v-spacer></v-spacer>
+            <v-btn icon color="error"><v-icon>mdi-close</v-icon></v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-text-field
+              hide-details
+              v-model="unStatus.nom"
+              label="Nom"
+            ></v-text-field>
+            <v-text-field
+              hide-details
+              v-model="unStatus.dureeMax"
+              type="number"
+              label="Nombre de tour"
+            ></v-text-field>
+            <div>
+              <div class="mb-n5 mt-1">Effet:</div>
+              <div class="d-flex">
+                <v-text-field
+                  hide-details
+                  v-model="unStatus.effet"
+                  type="number"
+                ></v-text-field>
+                <v-select
+                  hide-details
+                  v-model="unStatus.pvmp"
+                  :items="pvMp"
+                ></v-select>
+              </div>
+            </div>
+            <v-btn
+              class="mt-2"
+              color="purple lighten-5"
+              @click="enregistrerStatus()"
+              >Enregistrer</v-btn
+            >
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-main>
   </v-app>
 </template>
 
-<script>
-export default {
-  name: "App",
+<script lang="ts">
+import axios from "axios";
+import Vue from "vue";
+import { Entiter, Status } from "./store/type";
 
-  data: () => ({
-    caseAjouterJoueur: false,
-    joueur: [],
-    nomJ: "",
-    PVJ: "",
-    MPJ: "",
-    nomStatus: "",
-    tourStatus: "",
-    effetStatus: "",
-    descripStatus: "",
-    NTour: 1,
-    calculePV: "",
-    calculeMP: "",
-    ennemy: [],
-    listeCouleur: [
-      {
-        fond: "red lighten-1",
-        case: "red lighten-5",
-      },
-      {
-        fond: "pink lighten-3",
-        case: "pink lighten-5",
-      },
-      {
-        fond: "purple lighten-1",
-        case: "purple lighten-5",
-      },
-      {
-        fond: "deep-purple lighten-1",
-        case: "deep-purple lighten-5",
-      },
-      {
-        fond: "indigo lighten-1",
-        case: "indigo lighten-5",
-      },
-      {
-        fond: "blue lighten-1",
-        case: "blue lighten-5",
-      },
-      {
-        fond: "light-blue lighten-1",
-        case: "light-blue lighten-5",
-      },
-      {
-        fond: "cyan lighten-1",
-        case: "cyan lighten-5",
-      },
-      {
-        fond: "teal lighten-1",
-        case: "teal lighten-5",
-      },
-      {
-        fond: "green lighten-1",
-        case: "green lighten-5",
-      },
-      {
-        fond: "light-green lighten-1",
-        case: "light-green lighten-5",
-      },
-      {
-        fond: "lime lighten-1",
-        case: "lime lighten-5",
-      },
-      {
-        fond: "yellow lighten-1",
-        case: "yellow lighten-5",
-      },
-      {
-        fond: "amber lighten-1",
-        case: "amber lighten-5",
-      },
-      {
-        fond: "orange lighten-1",
-        case: "orange lighten-5",
-      },
-      {
-        fond: "deep-orange lighten-1",
-        case: "deep-orange lighten-5",
-      },
-      {
-        fond: "blue-grey lighten-1",
-        case: "blue-grey lighten-5",
-      },
-    ],
-  }),
+export default Vue.extend({
+  name: "App",
+  data() {
+    return {
+      numTour: 0,
+      joueurs: [] as Entiter[],
+      ennemis: [] as Entiter[],
+      uneEntiter: new Entiter(),
+      unStatus: new Status(),
+      cestUnJoueur: false,
+      pvMp: [
+        { value: "p", text: "Pv" },
+        { value: "m", text: "Mp" },
+      ],
+      dialogueAjoutEntiter: false,
+      dialogueAjouterStatus: false,
+    };
+  },
   methods: {
-    ajouterJoueur() {
-      this.joueur.push({
-        nom: this.nomJ,
-        PVMax: this.PVJ,
-        PV: this.PVJ,
-        MPMax: this.MPJ,
-        MP: this.MPJ,
-        ajouterStatus: false,
-        status: [],
-        couleur: this.choisiCouleur(),
-      });
-      this.nomJ = "";
-      this.PVJ = "";
-      this.MPJ = "";
-      this.caseAjouterJoueur = false;
+    initialisation() {
+      const unJoueur = new Entiter();
+      unJoueur.setNom("Jean-jacque");
+      unJoueur.setMPMax(50);
+      unJoueur.setPVMax(30);
+      const unStatus = new Status();
+      unStatus.setDuree(5);
+      unStatus.setNom("Poison");
+      unStatus.setTypePvMp("p");
+      unStatus.setEffet(-5);
+      unJoueur.getStatus().push(unStatus);
+      this.joueurs.push(unJoueur);
     },
-    choisiCouleur() {
-      return this.listeCouleur[Math.floor(Math.random() * 17)];
+    ouvrirDialogueAjoutEntiter(cestUnJoueur: boolean) {
+      this.cestUnJoueur = cestUnJoueur;
+      this.dialogueAjoutEntiter = true;
+      this.uneEntiter = new Entiter();
     },
-    supprimerJoueur(index) {
-      this.joueur.splice(index, 1);
-    },
-    supprimerStatus(indexJoueur, indexStatus) {
-      this.joueur[indexJoueur].status.splice(indexStatus, 1);
-    },
-    ouvrirAjouterStatusJoueur(index) {
-      this.joueur[index].ajouterStatus = true;
-    },
-    ajouterStatus(index) {
-      let leJoueur = this.joueur[index];
-      leJoueur.status.push({
-        nomStatus: this.nomStatus,
-        effetStatus: this.effetStatus,
-        tourRestant: this.tourStatus,
-        descripStatus: this.descripStatus,
-      });
-      this.effetStatus = "";
-      this.tourStatus = "";
-      this.nomStatus = "";
-      this.descripStatus = "";
-      leJoueur.ajouterStatus = false;
-    },
-    ajouterTour() {
-      this.NTour += 1;
-      for (const unJoueur of this.joueur) {
-        let i = 0;
-        for (const unStatus of unJoueur.status) {
-          unStatus.tourRestant -= 1;
-          const leStatus = unStatus.effetStatus.split(" ");
-          if (leStatus[1].toUpperCase() == "PV") {
-            unJoueur.PV = unJoueur.PV * 1;
-            unJoueur.PV += leStatus[0] * 1;
-          } else if (leStatus[1].toUpperCase() == "MP") {
-            unJoueur.MP = unJoueur.MP * 1;
-            unJoueur.MP += leStatus[0] * 1;
-          }
-          if (unStatus.tourRestant <= 0) {
-            unJoueur.status.splice(i, 1);
-          }
-          i++;
-        }
+    enregistrerEntiter() {
+      this.uneEntiter.setMPMax(this.uneEntiter.getMpMax());
+      this.uneEntiter.setPVMax(this.uneEntiter.getPvMax());
+      if (this.cestUnJoueur == true) {
+        this.joueurs.push(this.uneEntiter);
+      } else {
+        this.ennemis.push(this.uneEntiter);
       }
+      this.fermerDialogueAjoutEntiter();
     },
-    renitialiserTour() {
-      this.NTour = 1;
+    fermerDialogueAjoutEntiter() {
+      this.dialogueAjoutEntiter = false;
+      this.uneEntiter = new Entiter();
     },
-    calculerLesPV(index) {
-      this.joueur[index].PV = this.joueur[index].PV * 1 + this.calculePV * 1;
-      this.calculePV = "";
+    ouvrirDialogueStatus(uneEntiter: Entiter) {
+      this.dialogueAjouterStatus = true;
+      this.unStatus = new Status();
+      this.uneEntiter = uneEntiter;
     },
-    calculerLesMP(index) {
-      this.joueur[index].MP = this.joueur[index].MP * 1 + this.calculeMP * 1;
-      this.calculeMP = "";
+    enregistrerStatus() {
+      this.unStatus.setDuree(this.unStatus.getDureeMax());
+      this.unStatus.setEffet(this.unStatus.getEffet());
+      this.uneEntiter.getStatus().push(this.unStatus);
+      this.fermerDialogueStatus();
+    },
+    fermerDialogueStatus() {
+      this.dialogueAjouterStatus = false;
+      this.unStatus = new Status();
+      this.uneEntiter = new Entiter();
     },
   },
-};
+  mounted() {
+    this.initialisation();
+  },
+});
 </script>

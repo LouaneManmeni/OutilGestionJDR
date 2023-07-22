@@ -1,0 +1,70 @@
+[
+  {
+    "fond": "red lighten-1",
+    "case": "red lighten-5"
+  },
+  {
+    "fond": "pink lighten-3",
+    "case": "pink lighten-5"
+  },
+  {
+    "fond": "purple lighten-1",
+    "case": "purple lighten-5"
+  },
+  {
+    "fond": "deep-purple lighten-1",
+    "case": "deep-purple lighten-5"
+  },
+  {
+    "fond": "indigo lighten-1",
+    "case": "indigo lighten-5"
+  },
+  {
+    "fond": "blue lighten-1",
+    "case": "blue lighten-5"
+  },
+  {
+    "fond": "light-blue lighten-1",
+    "case": "light-blue lighten-5"
+  },
+  {
+    "fond": "cyan lighten-1",
+    "case": "cyan lighten-5"
+  },
+  {
+    "fond": "teal lighten-1",
+    "case": "teal lighten-5"
+  },
+  {
+    "fond": "green lighten-1",
+    "case": "green lighten-5"
+  },
+  {
+    "fond": "light-green lighten-1",
+    "case": "light-green lighten-5"
+  },
+  {
+    "fond": "lime lighten-1",
+    "case": "lime lighten-5"
+  },
+  {
+    "fond": "yellow lighten-1",
+    "case": "yellow lighten-5"
+  },
+  {
+    "fond": "amber lighten-1",
+    "case": "amber lighten-5"
+  },
+  {
+    "fond": "orange lighten-1",
+    "case": "orange lighten-5"
+  },
+  {
+    "fond": "deep-orange lighten-1",
+    "case": "deep-orange lighten-5"
+  },
+  {
+    "fond": "blue-grey lighten-1",
+    "case": "blue-grey lighten-5"
+  }
+]
