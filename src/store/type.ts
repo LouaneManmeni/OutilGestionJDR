@@ -52,6 +52,9 @@ export class Status {
   setTypePvMp(pvmp: string) {
     this.pvmp = pvmp;
   }
+  setDuréeInfini() {
+    this.setDuree(-1307);
+  }
 
   passerTour() {
     this.duree -= 1;
@@ -81,8 +84,10 @@ export class Entiter {
   nom: string;
   pvMax: number;
   pv: number;
+  modificateurPv: string;
   mpMax: number;
   mp: number;
+  modifcateurMp: string;
   status: Status[];
   couleurFiche: CarteCouleur;
 
@@ -107,6 +112,8 @@ export class Entiter {
       this.status = [];
     }
     this.couleurFiche = new CarteCouleur();
+    this.modifcateurMp = "";
+    this.modificateurPv = "";
   }
 
   getNom() {
@@ -145,13 +152,16 @@ export class Entiter {
 
   modifierPV(modificateur: number) {
     this.pv += modificateur * 1;
+    this.modificateurPv = "";
   }
   modifierMP(modificateur: number) {
     this.mp += modificateur * 1;
+    this.modifcateurMp = "";
   }
 
   passerUnTour() {
     if (this.status.length != 0) {
+      let i = 0;
       for (const unStatus of this.status) {
         const typePvMp = unStatus.getTypePvMp();
         if (typePvMp == "p") {
@@ -159,6 +169,11 @@ export class Entiter {
         } else if (typePvMp == "m") {
           this.modifierMP(unStatus.getEffet());
         }
+        unStatus.passerTour();
+        if (unStatus.getDuree() <= 0 && unStatus.getDuree() != -1307) {
+          this.status.splice(i, 1);
+        }
+        i++;
       }
     }
   }

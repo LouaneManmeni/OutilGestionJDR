@@ -10,8 +10,8 @@
       </v-btn>
       <div class="d-flex align-center">
         <div>Tour: {{ numTour }}</div>
-        <v-btn icon><v-icon>mdi-plus</v-icon></v-btn>
-        <v-btn icon><v-icon>mdi-refresh</v-icon></v-btn>
+        <v-btn icon @click="passerTour()"><v-icon>mdi-plus</v-icon></v-btn>
+        <v-btn icon @click="resetTour()"><v-icon>mdi-refresh</v-icon></v-btn>
       </div>
       <v-btn icon @click="ouvrirDialogueAjoutEntiter(false)" class="mr-5">
         <v-icon>mdi-virus-outline</v-icon>
@@ -38,11 +38,15 @@
                     Pv: {{ unJoueur.getPV() }} / {{ unJoueur.getPvMax() }}
                   </div>
                   <v-text-field
+                    v-model="unJoueur.modificateurPv"
                     style="width: 40px"
                     type="number"
                     hide-details
                     class="mt-0 pt-0 ml-1"
                     :color="unJoueur.getCouleur().getCase()"
+                    @change="
+                      unJoueur.modifierPV(parseInt(unJoueur.modificateurPv))
+                    "
                   ></v-text-field>
                 </div>
                 <div class="d-flex align-center font-weight-black black--text">
@@ -50,11 +54,15 @@
                     Mp: {{ unJoueur.getMP() }} / {{ unJoueur.getMpMax() }}
                   </div>
                   <v-text-field
+                    v-model="unJoueur.modifcateurMp"
                     style="width: 40px"
                     type="number"
                     hide-details
                     class="mt-0 pt-0 ml-1"
                     :color="unJoueur.getCouleur().getCase()"
+                    @change="
+                      unJoueur.modifierMP(parseInt(unJoueur.modifcateurMp))
+                    "
                   ></v-text-field>
                 </div>
               </div>
@@ -119,11 +127,15 @@
                     Pv: {{ unJoueur.getPV() }} / {{ unJoueur.getPvMax() }}
                   </div>
                   <v-text-field
+                    v-model="unJoueur.modificateurPv"
                     style="width: 40px"
                     type="number"
                     hide-details
                     class="mt-0 pt-0 ml-1"
                     :color="unJoueur.getCouleur().getCase()"
+                    @change="
+                      unJoueur.modifierPV(parseInt(unJoueur.modificateurPv))
+                    "
                   ></v-text-field>
                 </div>
                 <div class="d-flex align-center font-weight-black black--text">
@@ -131,11 +143,15 @@
                     Mp: {{ unJoueur.getMP() }} / {{ unJoueur.getMpMax() }}
                   </div>
                   <v-text-field
+                    v-model="unJoueur.modifcateurMp"
                     style="width: 40px"
                     type="number"
                     hide-details
                     class="mt-0 pt-0 ml-1"
                     :color="unJoueur.getCouleur().getCase()"
+                    @change="
+                      unJoueur.modifierMP(parseInt(unJoueur.modifcateurMp))
+                    "
                   ></v-text-field>
                 </div>
               </div>
@@ -226,7 +242,9 @@
           <v-card-title class="pb-0">
             <div>Nouveau Status</div>
             <v-spacer></v-spacer>
-            <v-btn icon color="error"><v-icon>mdi-close</v-icon></v-btn>
+            <v-btn icon color="error" @click="fermerDialogueStatus()">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
           </v-card-title>
           <v-card-text>
             <v-text-field
@@ -234,12 +252,26 @@
               v-model="unStatus.nom"
               label="Nom"
             ></v-text-field>
-            <v-text-field
-              hide-details
-              v-model="unStatus.dureeMax"
-              type="number"
-              label="Nombre de tour"
-            ></v-text-field>
+            <div class="d-flex justify-center">
+              <v-text-field
+                hide-details
+                v-model="unStatus.dureeMax"
+                type="number"
+                label="Nombre de tour"
+                v-if="unStatus.getDureeMax() != -1307"
+              ></v-text-field>
+              <v-btn icon class="mt-5" @click="unStatus.setDuréeInfini()">
+                <v-icon>mdi-infinity</v-icon>
+              </v-btn>
+              <v-btn
+                text
+                @click="unStatus.setDuree(0)"
+                class="mt-5"
+                v-if="unStatus.getDureeMax() == -1307"
+              >
+                Annuler
+              </v-btn>
+            </div>
             <div>
               <div class="mb-n5 mt-1">Effet:</div>
               <div class="d-flex">
@@ -339,6 +371,18 @@ export default Vue.extend({
       this.dialogueAjouterStatus = false;
       this.unStatus = new Status();
       this.uneEntiter = new Entiter();
+    },
+    passerTour() {
+      this.numTour += 1;
+      for (const unJoueur of this.joueurs) {
+        unJoueur.passerUnTour();
+      }
+      for (const unEnnemie of this.ennemis) {
+        unEnnemie.passerUnTour();
+      }
+    },
+    resetTour() {
+      this.numTour = 0;
     },
   },
   mounted() {
