@@ -19,7 +19,10 @@
     </v-card>
     <v-main>
       <div class="d-flex">
-        <div class="ma-2 d-flex justify-center align-center" style="width: 50%">
+        <div
+          class="ma-2 d-flex flex-wrap justify-center align-center"
+          style="width: 50%"
+        >
           <v-card
             v-for="(unJoueur, j) in joueurs"
             :key="j + 'unJoueur'"
@@ -27,10 +30,21 @@
             class="ma-1"
             min-width="10px"
             min-height="10px"
+            max-width="400px"
           >
-            <v-card-title class="pb-0 d-flex justify-center">{{
-              unJoueur.getNom()
-            }}</v-card-title>
+            <v-card-title class="pb-0 d-flex justify-space-between">
+              <div></div>
+              <div class="mr-n5">
+                {{ unJoueur.getNom() }}
+              </div>
+              <v-btn
+                icon
+                :color="unJoueur.getCouleur().getCase()"
+                @click="supprimerEntiter(unJoueur, 'j')"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
             <v-card-text>
               <div class="d-flex align-center font-weight-black black--text">
                 <div class="d-flex mr-2">
@@ -81,15 +95,28 @@
                     :key="s + 'lestatus' + j"
                     class="ma-1"
                   >
-                    <v-card-title class="pb-0">{{
-                      unStatus.getNom()
-                    }}</v-card-title>
+                    <v-card-title class="pb-0 d-flex justify-space-between">
+                      <div></div>
+                      {{ unStatus.getNom() }}
+                      <v-btn
+                        icon
+                        :color="unJoueur.getCouleur().getFond()"
+                        @click="unJoueur.supprimerStatus(s)"
+                      >
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </v-card-title>
                     <v-card-text class="font-weight-black black--text">
-                      <div>Durée: {{ unStatus.getDuree() }}</div>
+                      <div v-if="unStatus.getDuree() != -1307">
+                        Durée: {{ unStatus.getDuree() }}
+                      </div>
+                      <div v-else><v-icon>mdi-infinity</v-icon></div>
                       <div>
                         Effet:
                         {{
-                          unStatus.getEffet() <= 0
+                          isNaN(unStatus.getEffet()) == true
+                            ? unStatus.getEffet()
+                            : unStatus.getEffet() <= 0
                             ? unStatus.getEffet()
                             : "+" + unStatus.getEffet()
                         }}
@@ -117,9 +144,19 @@
             min-width="10px"
             min-height="10px"
           >
-            <v-card-title class="pb-0 d-flex justify-center">{{
-              unJoueur.getNom()
-            }}</v-card-title>
+            <v-card-title class="pb-0 d-flex justify-space-between">
+              <div></div>
+              <div class="mr-n5">
+                {{ unJoueur.getNom() }}
+              </div>
+              <v-btn
+                icon
+                :color="unJoueur.getCouleur().getCase()"
+                @click="supprimerEntiter(unJoueur, 'j')"
+              >
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
             <v-card-text>
               <div class="d-flex align-center font-weight-black black--text">
                 <div class="d-flex mr-2">
@@ -174,11 +211,16 @@
                       unStatus.getNom()
                     }}</v-card-title>
                     <v-card-text class="font-weight-black black--text">
-                      <div>Durée: {{ unStatus.getDuree() }}</div>
+                      <div v-if="unStatus.getDuree() != -1307">
+                        Durée: {{ unStatus.getDuree() }}
+                      </div>
+                      <div v-else><v-icon>mdi-infinity</v-icon></div>
                       <div>
                         Effet:
                         {{
-                          unStatus.getEffet() <= 0
+                          isNaN(unStatus.getEffet()) == true
+                            ? unStatus.getEffet()
+                            : unStatus.getEffet() <= 0
                             ? unStatus.getEffet()
                             : "+" + unStatus.getEffet()
                         }}
@@ -279,8 +321,15 @@
                   hide-details
                   v-model="unStatus.effet"
                   type="number"
+                  v-if="unStatus.getTypePvMp() != 'a'"
+                ></v-text-field>
+                <v-text-field
+                  hide-details
+                  v-model="unStatus.effet"
+                  v-else
                 ></v-text-field>
                 <v-select
+                  class="ml-1"
                   hide-details
                   v-model="unStatus.pvmp"
                   :items="pvMp"
@@ -318,6 +367,7 @@ export default Vue.extend({
       pvMp: [
         { value: "p", text: "Pv" },
         { value: "m", text: "Mp" },
+        { value: "a", text: "Autre" },
       ],
       dialogueAjoutEntiter: false,
       dialogueAjouterStatus: false,
@@ -326,6 +376,7 @@ export default Vue.extend({
   methods: {
     initialisation() {
       const unJoueur = new Entiter();
+      unJoueur.setId();
       unJoueur.setNom("Jean-jacque");
       unJoueur.setMPMax(50);
       unJoueur.setPVMax(30);
@@ -355,6 +406,23 @@ export default Vue.extend({
     fermerDialogueAjoutEntiter() {
       this.dialogueAjoutEntiter = false;
       this.uneEntiter = new Entiter();
+    },
+    supprimerEntiter(uneEntiter: Entiter, liste: string) {
+      if (liste == "j") {
+        const index = this.joueurs.findIndex(
+          (e: Entiter) => e.getId() == uneEntiter.getId()
+        );
+        if (index != -1) {
+          this.joueurs.splice(index, 1);
+        }
+      } else if (liste == "e") {
+        const index = this.ennemis.findIndex(
+          (e: Entiter) => e.getId() == uneEntiter.getId()
+        );
+        if (index != -1) {
+          this.ennemis.splice(index, 1);
+        }
+      }
     },
     ouvrirDialogueStatus(uneEntiter: Entiter) {
       this.dialogueAjouterStatus = true;
