@@ -5,17 +5,27 @@
       color="purple lighten-5"
       class="d-flex align-center justify-space-between"
     >
-      <v-btn icon @click="ouvrirDialogueAjoutEntiter(true)" class="ml-5">
-        <v-icon>mdi-account-plus</v-icon>
-      </v-btn>
+      <div>
+        <v-btn icon @click="ouvrirDialogueAjoutEntiter(true)" class="ml-5">
+          <v-icon>mdi-account-plus</v-icon>
+        </v-btn>
+        <v-btn icon @click="ouvrirDialogueMultiStatus('j')">
+          <v-icon>mdi-needle</v-icon>
+        </v-btn>
+      </div>
       <div class="d-flex align-center">
         <div>Tour: {{ numTour }}</div>
         <v-btn icon @click="passerTour()"><v-icon>mdi-plus</v-icon></v-btn>
         <v-btn icon @click="resetTour()"><v-icon>mdi-refresh</v-icon></v-btn>
       </div>
-      <v-btn icon @click="ouvrirDialogueAjoutEntiter(false)" class="mr-5">
-        <v-icon>mdi-virus-outline</v-icon>
-      </v-btn>
+      <div>
+        <v-btn icon @click="ouvrirDialogueMultiStatus('e')">
+          <v-icon>mdi-needle</v-icon>
+        </v-btn>
+        <v-btn icon @click="ouvrirDialogueAjoutEntiter(false)" class="mr-5">
+          <v-icon>mdi-virus-outline</v-icon>
+        </v-btn>
+      </div>
     </v-card>
     <v-main>
       <div class="d-flex">
@@ -345,6 +355,20 @@
           </v-card-text>
         </v-card>
       </v-dialog>
+      <v-snackbar v-model="snak_visible">
+        {{ snakbar_text }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="primary"
+            text
+            timeout="5100"
+            v-bind="attrs"
+            @click="snak_visible = false"
+          >
+            Fermer
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-main>
   </v-app>
 </template>
@@ -363,6 +387,8 @@ export default Vue.extend({
       ennemis: [] as Entiter[],
       uneEntiter: new Entiter(),
       unStatus: new Status(),
+      multiStatus: false,
+      joueurOuEnnemi: "",
       cestUnJoueur: false,
       pvMp: [
         { value: "p", text: "Pv" },
@@ -371,6 +397,8 @@ export default Vue.extend({
       ],
       dialogueAjoutEntiter: false,
       dialogueAjouterStatus: false,
+      snak_visible: false,
+      snakbar_text: "",
     };
   },
   methods: {
@@ -429,16 +457,48 @@ export default Vue.extend({
       this.unStatus = new Status();
       this.uneEntiter = uneEntiter;
     },
+    ouvrirDialogueMultiStatus(jOe: string) {
+      if (
+        (jOe == "j" && this.joueurs.length == 0) ||
+        (jOe == "e" && this.ennemis.length == 0)
+      ) {
+        const phrase = jOe == "j" ? "Joueur" : jOe == "e" ? "Ennemie" : "";
+        this.snackbarVisible(
+          "Vous ne pouvez ajouter de status au groupe de " +
+            phrase +
+            " car il est vide."
+        );
+      } else {
+        this.multiStatus = true;
+        this.joueurOuEnnemi = jOe;
+        this.unStatus = new Status();
+        this.dialogueAjouterStatus = true;
+      }
+    },
     enregistrerStatus() {
       this.unStatus.setDuree(this.unStatus.getDureeMax());
       this.unStatus.setEffet(this.unStatus.getEffet());
-      this.uneEntiter.getStatus().push(this.unStatus);
+      if (this.multiStatus == true) {
+        if (this.joueurOuEnnemi == "j") {
+          for (const uneEntiter of this.joueurs) {
+            uneEntiter.getStatus().push(this.unStatus);
+          }
+        } else if (this.joueurOuEnnemi == "e") {
+          for (const uneEntiter of this.ennemis) {
+            uneEntiter.getStatus().push(this.unStatus);
+          }
+        }
+      } else {
+        this.uneEntiter.getStatus().push(this.unStatus);
+      }
       this.fermerDialogueStatus();
     },
     fermerDialogueStatus() {
       this.dialogueAjouterStatus = false;
       this.unStatus = new Status();
       this.uneEntiter = new Entiter();
+      this.multiStatus = false;
+      this.joueurOuEnnemi = "";
     },
     passerTour() {
       this.numTour += 1;
@@ -451,6 +511,15 @@ export default Vue.extend({
     },
     resetTour() {
       this.numTour = 0;
+    },
+    snackbarVisible(text: string) {
+      this.snakbar_text = text;
+      this.snak_visible = true;
+    },
+    delay(n: number) {
+      return new Promise(function (resolve) {
+        setTimeout(resolve, n * 100);
+      });
     },
   },
   mounted() {
