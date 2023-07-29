@@ -278,6 +278,20 @@
                 class="ma-1"
               ></v-text-field>
             </div>
+            <div class="d-flex mt-3">
+              <div>Couleur fiche:</div>
+              <div
+                @click="dialogueCouleur = true"
+                class="ml-1"
+                :style="
+                  'background:radial-gradient(' +
+                  uneEntiter.getCouleur().getCase() +
+                  ', ' +
+                  uneEntiter.getCouleur().getFond() +
+                  ') ; border-radius: 50%; width: 20px; height: 20px;'
+                "
+              ></div>
+            </div>
             <v-btn
               color="purple lighten-5"
               class="mt-2"
@@ -285,6 +299,36 @@
             >
               Enregistrer
             </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog persistent v-model="dialogueCouleur" max-width="340px">
+        <v-card>
+          <v-card-title class="pb-0">
+            <div>Couleur disponible:</div>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="dialogueCouleur = false" color="error">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text class="d-flex flex-wrap">
+            <div
+              v-for="(uneCouleur, c) in listeCouleur"
+              :key="c + 'lesCouleurs'"
+            >
+              <div
+                class="ma-1"
+                :style="
+                  'background:radial-gradient(' +
+                  uneCouleur.case +
+                  ', ' +
+                  uneCouleur.fond +
+                  ') ; border-radius: 50%; width: 40px; height: 40px;'
+                "
+                @click="changezCouleur(c)"
+              ></div>
+            </div>
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -377,6 +421,7 @@
 import axios from "axios";
 import Vue from "vue";
 import { Entiter, Status } from "./store/type";
+const listeCouleur = require("./assets/listeCouleur.json");
 
 export default Vue.extend({
   name: "App",
@@ -397,6 +442,8 @@ export default Vue.extend({
       ],
       dialogueAjoutEntiter: false,
       dialogueAjouterStatus: false,
+      dialogueCouleur: false,
+      listeCouleur: listeCouleur,
       snak_visible: false,
       snakbar_text: "",
     };
@@ -451,6 +498,10 @@ export default Vue.extend({
           this.ennemis.splice(index, 1);
         }
       }
+    },
+    changezCouleur(index: number) {
+      this.uneEntiter.getCouleur().setCouleur(index);
+      this.dialogueCouleur = false;
     },
     ouvrirDialogueStatus(uneEntiter: Entiter) {
       this.dialogueAjouterStatus = true;

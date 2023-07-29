@@ -82,6 +82,10 @@ export class CarteCouleur {
   getCase() {
     return this.case;
   }
+  setCouleur(index: number) {
+    this.fond = listeCouleur[index].fond;
+    this.case = listeCouleur[index].case;
+  }
 }
 
 export class Entiter {

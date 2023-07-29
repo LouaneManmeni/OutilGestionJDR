@@ -1,70 +1,70 @@
 [
   {
-    "fond": "red lighten-1",
-    "case": "red lighten-5"
+    "fond": "#EF5350",
+    "case": "#FFEBEE"
   },
   {
-    "fond": "pink lighten-3",
-    "case": "pink lighten-5"
+    "fond": "#F48FB1",
+    "case": "#FCE4EC"
   },
   {
-    "fond": "purple lighten-1",
-    "case": "purple lighten-5"
+    "fond": "#AB47BC",
+    "case": "#F3E5F5"
   },
   {
-    "fond": "deep-purple lighten-1",
-    "case": "deep-purple lighten-5"
+    "fond": "#7E57C2",
+    "case": "#EDE7F6"
   },
   {
-    "fond": "indigo lighten-1",
-    "case": "indigo lighten-5"
+    "fond": "#5C6BC0",
+    "case": "#E8EAF6"
   },
   {
-    "fond": "blue lighten-1",
-    "case": "blue lighten-5"
+    "fond": "#42A5F5",
+    "case": "#E3F2FD"
   },
   {
-    "fond": "light-blue lighten-1",
-    "case": "light-blue lighten-5"
+    "fond": "#29B6F6",
+    "case": "#E1F5FE"
   },
   {
-    "fond": "cyan lighten-1",
-    "case": "cyan lighten-5"
+    "fond": "#26C6DA",
+    "case": "#E0F7FA"
   },
   {
-    "fond": "teal lighten-1",
-    "case": "teal lighten-5"
+    "fond": "#26A69A",
+    "case": "#E0F2F1"
   },
   {
-    "fond": "green lighten-1",
-    "case": "green lighten-5"
+    "fond": "#66BB6A",
+    "case": "#E8F5E9"
   },
   {
-    "fond": "light-green lighten-1",
-    "case": "light-green lighten-5"
+    "fond": "#9CCC65",
+    "case": "#F1F8E9"
   },
   {
-    "fond": "lime lighten-1",
-    "case": "lime lighten-5"
+    "fond": "#D4E157",
+    "case": "#F9FBE7"
   },
   {
-    "fond": "yellow lighten-1",
-    "case": "yellow lighten-5"
+    "fond": "#FFFDE7",
+    "case": "#FFF59D"
   },
   {
-    "fond": "amber lighten-1",
-    "case": "amber lighten-5"
+    "fond": "#FFCA28",
+    "case": "#FFF8E1"
   },
   {
-    "fond": "orange lighten-1",
-    "case": "orange lighten-5"
+    "fond": "#FFA726",
+    "case": "#FFF3E0"
   },
   {
-    "fond": "deep-orange lighten-1",
-    "case": "deep-orange lighten-5"
+    "fond": "#FF7043",
+    "case": "#FBE9E7"
   },
   {
-    "fond": "blue-grey lighten-1",
-    "case": "blue-grey lighten-5"
+    "fond": "#78909C",
+    "case": "#ECEFF1"
   }
 ]
