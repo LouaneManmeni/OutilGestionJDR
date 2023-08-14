@@ -44,7 +44,7 @@
           >
             <v-card-title class="pb-0 d-flex justify-space-between">
               <v-btn
-                :color="unJoueur.getCouleur().getCase()"
+                :color="unJoueur.getCouleur().getBouton()"
                 icon
                 @click="ouvrirModificationEntiter(unJoueur, true)"
               >
@@ -55,7 +55,7 @@
               </div>
               <v-btn
                 icon
-                :color="unJoueur.getCouleur().getCase()"
+                :color="unJoueur.getCouleur().getBouton()"
                 @click="supprimerEntiter(unJoueur, 'j')"
               >
                 <v-icon>mdi-close</v-icon>
@@ -73,7 +73,7 @@
                     type="number"
                     hide-details
                     class="mt-0 pt-0 ml-1"
-                    :color="unJoueur.getCouleur().getCase()"
+                    :color="unJoueur.getCouleur().getBouton()"
                     @change="
                       unJoueur.modifierPV(parseInt(unJoueur.modificateurPv))
                     "
@@ -89,7 +89,7 @@
                     type="number"
                     hide-details
                     class="mt-0 pt-0 ml-1"
-                    :color="unJoueur.getCouleur().getCase()"
+                    :color="unJoueur.getCouleur().getBouton()"
                     @change="
                       unJoueur.modifierMP(parseInt(unJoueur.modifcateurMp))
                     "
@@ -100,7 +100,7 @@
                 Status:
                 <v-btn
                   icon
-                  :color="unJoueur.getCouleur().getCase()"
+                  :color="unJoueur.getCouleur().getBouton()"
                   @click="ouvrirDialogueStatus(unJoueur)"
                 >
                   <v-icon>mdi-plus</v-icon>
@@ -172,7 +172,7 @@
           >
             <v-card-title class="pb-0 d-flex justify-space-between">
               <v-btn
-                :color="unJoueur.getCouleur().getCase()"
+                :color="unJoueur.getCouleur().getBouton()"
                 icon
                 @click="ouvrirModificationEntiter(unJoueur, false)"
               >
@@ -183,7 +183,7 @@
               </div>
               <v-btn
                 icon
-                :color="unJoueur.getCouleur().getCase()"
+                :color="unJoueur.getCouleur().getBouton()"
                 @click="supprimerEntiter(unJoueur, 'e')"
               >
                 <v-icon>mdi-close</v-icon>
@@ -201,7 +201,7 @@
                     type="number"
                     hide-details
                     class="mt-0 pt-0 ml-1"
-                    :color="unJoueur.getCouleur().getCase()"
+                    :color="unJoueur.getCouleur().getBouton()"
                     @change="
                       unJoueur.modifierPV(parseInt(unJoueur.modificateurPv))
                     "
@@ -217,7 +217,7 @@
                     type="number"
                     hide-details
                     class="mt-0 pt-0 ml-1"
-                    :color="unJoueur.getCouleur().getCase()"
+                    :color="unJoueur.getCouleur().getBouton()"
                     @change="
                       unJoueur.modifierMP(parseInt(unJoueur.modifcateurMp))
                     "
@@ -228,7 +228,7 @@
                 Status:
                 <v-btn
                   icon
-                  :color="unJoueur.getCouleur().getCase()"
+                  :color="unJoueur.getCouleur().getBouton()"
                   @click="ouvrirDialogueStatus(unJoueur)"
                 >
                   <v-icon>mdi-plus</v-icon>
@@ -331,7 +331,7 @@
                 class="ml-1"
                 :style="
                   'background:radial-gradient(' +
-                  uneEntiter.getCouleur().getCase() +
+                  uneEntiter.getCouleur().getBouton() +
                   ', ' +
                   uneEntiter.getCouleur().getFond() +
                   ') ; border-radius: 50%; width: 20px; height: 20px;'
@@ -367,9 +367,9 @@
                 class="ma-1"
                 :style="
                   'background:radial-gradient(' +
-                  uneCouleur.case +
+                  uneCouleur.getBouton() +
                   ', ' +
-                  uneCouleur.fond +
+                  uneCouleur.getFond() +
                   ') ; border-radius: 50%; width: 40px; height: 40px;'
                 "
                 @click="changezCouleur(c)"
@@ -473,12 +473,12 @@
 import axios from "axios";
 import Vue from "vue";
 import { Entiter, Status } from "./store/type";
-const listeCouleur = require("./assets/listeCouleur.json");
 
 export default Vue.extend({
   name: "App",
   data() {
     return {
+      unsubcribe: null as any,
       numTour: 1,
       joueurs: [] as Entiter[],
       ennemis: [] as Entiter[],
@@ -497,26 +497,26 @@ export default Vue.extend({
       dialogueAjoutEntiter: false,
       dialogueAjouterStatus: false,
       dialogueCouleur: false,
-      listeCouleur: listeCouleur,
+      listeCouleur: [] as any,
       snak_visible: false,
       snakbar_text: "",
     };
   },
   methods: {
-    initialisation() {
-      const unJoueur = new Entiter();
-      unJoueur.setId();
-      unJoueur.setNom("Jean-jacque");
-      unJoueur.setMPMax(50);
-      unJoueur.setPVMax(30);
-      const unStatus = new Status();
-      unStatus.setId();
-      unStatus.setDuree(5);
-      unStatus.setNom("Poison");
-      unStatus.setTypePvMp("p");
-      unStatus.setEffet(-5);
-      unJoueur.getStatus().push(unStatus);
-      this.joueurs.push(unJoueur);
+    async initialisation() {
+      await this.$store.dispatch("chargerCouleur");
+      axios
+        .post(this.$store.state.serverphp + "jeu.php", {
+          action: "INI",
+        })
+        .then((response) => {
+          this.joueurs = response.data.joueurs.map((j: Entiter) => {
+            return new Entiter(j);
+          });
+          this.ennemis = response.data.ennemis.map((e: Entiter) => {
+            return new Entiter(e);
+          });
+        });
     },
     ouvrirDialogueAjoutEntiter(cestUnJoueur: boolean) {
       this.cestUnJoueur = cestUnJoueur;
@@ -533,14 +533,25 @@ export default Vue.extend({
       //Pour que se soit de vrais number
       this.uneEntiter.setPVMax(this.uneEntiter.getPvMax());
       this.uneEntiter.setMPMax(this.uneEntiter.getMpMax());
+      let JouE;
       if (this.uneEntiterTampon.getId() == "") {
         this.uneEntiter.setId();
         if (this.cestUnJoueur == true) {
           this.joueurs.push(this.uneEntiter);
+          JouE = "J";
         } else {
           this.ennemis.push(this.uneEntiter);
+          JouE = "E";
         }
       }
+      let uneEntiter: any = this.uneEntiter;
+      uneEntiter.JouE = JouE;
+      console.log(uneEntiter);
+      axios.post(this.$store.state.serverphp + "jeu.php", {
+        action: "ENREGISTRER_ENTITER",
+        entiter: uneEntiter,
+      });
+
       this.fermerDialogueAjoutEntiter();
     },
     fermerDialogueAjoutEntiter() {
@@ -684,6 +695,14 @@ export default Vue.extend({
         setTimeout(resolve, n * 100);
       });
     },
+  },
+  created() {
+    this.unsubcribe = this.$store.subscribe((mutation) => {
+      switch (mutation.type) {
+        case "majCouleur":
+          this.listeCouleur = this.$store.state.couleurs;
+      }
+    });
   },
   mounted() {
     this.initialisation();

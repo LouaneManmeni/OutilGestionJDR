@@ -1,3 +1,5 @@
+import store from ".";
+
 export class Status {
   id: string;
   nom: string;
@@ -74,26 +76,38 @@ export class Status {
   }
 }
 
-const listeCouleur = require("../assets/listeCouleur.json");
 export class CarteCouleur {
+  private id: number;
   private fond: string;
-  private case: string;
+  private bouton: string;
 
-  constructor() {
-    const index = Math.floor(Math.random() * listeCouleur.length);
-    this.fond = listeCouleur[index].fond;
-    this.case = listeCouleur[index].case;
+  constructor();
+  constructor(couleurs: CarteCouleur);
+  constructor(...args: any[]) {
+    if (args.length == 1) {
+      this.id = args[0].id;
+      this.fond = args[0].fond;
+      this.bouton = args[0].bouton;
+    } else {
+      this.fond = "#AB47BC";
+      this.bouton = "#F3E5F5";
+      this.id = 3;
+    }
   }
 
+  getId() {
+    return this.id;
+  }
   getFond() {
     return this.fond;
   }
-  getCase() {
-    return this.case;
+  getBouton() {
+    return this.bouton;
   }
   setCouleur(index: number) {
-    this.fond = listeCouleur[index].fond;
-    this.case = listeCouleur[index].case;
+    this.fond = store.state.couleurs[index].getFond();
+    this.bouton = store.state.couleurs[index].getBouton();
+    this.id = store.state.couleurs[index].getId();
   }
 }
 
@@ -122,6 +136,7 @@ export class Entiter {
       this.status = args[0].status.map((s: Status) => {
         return new Status(s);
       });
+      this.couleurFiche = new CarteCouleur(args[0].couleurFiche);
     } else {
       this.id = "";
       this.nom = "";
@@ -130,8 +145,8 @@ export class Entiter {
       this.mp = 0;
       this.mpMax = 0;
       this.status = [];
+      this.couleurFiche = new CarteCouleur();
     }
-    this.couleurFiche = new CarteCouleur();
     this.modifcateurMp = "";
     this.modificateurPv = "";
   }

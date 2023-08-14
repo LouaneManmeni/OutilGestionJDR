@@ -1,70 +1,70 @@
 [
   {
     "fond": "#EF5350",
-    "case": "#FFEBEE"
+    "bouton": "#FFEBEE"
   },
   {
     "fond": "#F48FB1",
-    "case": "#FCE4EC"
+    "bouton": "#FCE4EC"
   },
   {
     "fond": "#AB47BC",
-    "case": "#F3E5F5"
+    "bouton": "#F3E5F5"
   },
   {
     "fond": "#7E57C2",
-    "case": "#EDE7F6"
+    "bouton": "#EDE7F6"
   },
   {
     "fond": "#5C6BC0",
-    "case": "#E8EAF6"
+    "bouton": "#E8EAF6"
   },
   {
     "fond": "#42A5F5",
-    "case": "#E3F2FD"
+    "bouton": "#E3F2FD"
   },
   {
     "fond": "#29B6F6",
-    "case": "#E1F5FE"
+    "bouton": "#E1F5FE"
   },
   {
     "fond": "#26C6DA",
-    "case": "#E0F7FA"
+    "bouton": "#E0F7FA"
   },
   {
     "fond": "#26A69A",
-    "case": "#E0F2F1"
+    "bouton": "#E0F2F1"
   },
   {
     "fond": "#66BB6A",
-    "case": "#E8F5E9"
+    "bouton": "#E8F5E9"
   },
   {
     "fond": "#9CCC65",
-    "case": "#F1F8E9"
+    "bouton": "#F1F8E9"
   },
   {
     "fond": "#D4E157",
-    "case": "#F9FBE7"
+    "bouton": "#F9FBE7"
   },
   {
     "fond": "#FFFDE7",
-    "case": "#FBC02D"
+    "bouton": "#FBC02D"
   },
   {
     "fond": "#FFCA28",
-    "case": "#FFF8E1"
+    "bouton": "#FFF8E1"
   },
   {
     "fond": "#FFA726",
-    "case": "#FFF3E0"
+    "bouton": "#FFF3E0"
   },
   {
     "fond": "#FF7043",
-    "case": "#FBE9E7"
+    "bouton": "#FBE9E7"
   },
   {
     "fond": "#78909C",
-    "case": "#ECEFF1"
+    "bouton": "#ECEFF1"
   }
 ]
