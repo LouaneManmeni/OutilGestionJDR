@@ -43,8 +43,14 @@
             max-width="400px"
           >
             <v-card-title class="pb-0 d-flex justify-space-between">
-              <div></div>
-              <div class="mr-n5">
+              <v-btn
+                :color="unJoueur.getCouleur().getCase()"
+                icon
+                @click="ouvrirModificationEntiter(unJoueur, true)"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+              <div>
                 {{ unJoueur.getNom() }}
               </div>
               <v-btn
@@ -155,14 +161,20 @@
             min-height="10px"
           >
             <v-card-title class="pb-0 d-flex justify-space-between">
-              <div></div>
+              <v-btn
+                :color="unJoueur.getCouleur().getCase()"
+                icon
+                @click="ouvrirModificationEntiter(unJoueur, false)"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
               <div class="mr-n5">
                 {{ unJoueur.getNom() }}
               </div>
               <v-btn
                 icon
                 :color="unJoueur.getCouleur().getCase()"
-                @click="supprimerEntiter(unJoueur, 'j')"
+                @click="supprimerEntiter(unJoueur, 'e')"
               >
                 <v-icon>mdi-close</v-icon>
               </v-btn>
@@ -431,6 +443,7 @@ export default Vue.extend({
       joueurs: [] as Entiter[],
       ennemis: [] as Entiter[],
       uneEntiter: new Entiter(),
+      uneEntiterTampon: new Entiter(),
       unStatus: new Status(),
       multiStatus: false,
       joueurOuEnnemi: "",
@@ -468,17 +481,47 @@ export default Vue.extend({
       this.dialogueAjoutEntiter = true;
       this.uneEntiter = new Entiter();
     },
+    ouvrirModificationEntiter(uneEntiter: Entiter, cestUnJoueur: boolean) {
+      this.uneEntiter = uneEntiter;
+      this.uneEntiterTampon = new Entiter(uneEntiter);
+      this.cestUnJoueur = cestUnJoueur;
+      this.dialogueAjoutEntiter = true;
+    },
     enregistrerEntiter() {
-      this.uneEntiter.setMPMax(this.uneEntiter.getMpMax());
+      //Pour que se soit de vrais number
       this.uneEntiter.setPVMax(this.uneEntiter.getPvMax());
-      if (this.cestUnJoueur == true) {
-        this.joueurs.push(this.uneEntiter);
-      } else {
-        this.ennemis.push(this.uneEntiter);
+      this.uneEntiter.setMPMax(this.uneEntiter.getMpMax());
+      if (this.uneEntiterTampon.getId() == "") {
+        this.uneEntiter.setId();
+        if (this.cestUnJoueur == true) {
+          this.joueurs.push(this.uneEntiter);
+        } else {
+          this.ennemis.push(this.uneEntiter);
+        }
       }
-      this.fermerDialogueAjoutEntiter();
+      this.uneEntiterTampon = new Entiter();
+      this.dialogueAjoutEntiter = false;
+      this.uneEntiter = new Entiter();
     },
     fermerDialogueAjoutEntiter() {
+      if (this.uneEntiterTampon.getId() != "") {
+        if (this.cestUnJoueur == true) {
+          const index = this.joueurs.findIndex(
+            (j: Entiter) => this.uneEntiterTampon.getId() == j.getId()
+          );
+          if (index != -1) {
+            this.joueurs.splice(index, 1, this.uneEntiterTampon);
+          }
+        } else {
+          const index = this.ennemis.findIndex(
+            (j: Entiter) => this.uneEntiterTampon.getId() == j.getId()
+          );
+          if (index != -1) {
+            this.ennemis.splice(index, 1, this.uneEntiterTampon);
+          }
+        }
+      }
+      this.uneEntiterTampon = new Entiter();
       this.dialogueAjoutEntiter = false;
       this.uneEntiter = new Entiter();
     },
