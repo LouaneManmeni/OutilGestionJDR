@@ -111,9 +111,19 @@
                     :key="s + 'lestatus' + j"
                     class="ma-1"
                   >
-                    <v-card-title class="pb-0 d-flex justify-space-between">
-                      <div></div>
-                      {{ unStatus.getNom() }}
+                    <v-card-title
+                      class="pb-0 px-1 d-flex justify-space-between"
+                    >
+                      <v-btn
+                        icon
+                        :color="unJoueur.getCouleur().getFond()"
+                        @click="ouvrirModificationStatus(unJoueur, unStatus)"
+                      >
+                        <v-icon>mdi-pencil</v-icon>
+                      </v-btn>
+                      <div>
+                        {{ unStatus.getNom() }}
+                      </div>
                       <v-btn
                         icon
                         :color="unJoueur.getCouleur().getFond()"
@@ -229,9 +239,27 @@
                     :key="s + 'lestatus' + j"
                     class="ma-1"
                   >
-                    <v-card-title class="pb-0">{{
-                      unStatus.getNom()
-                    }}</v-card-title>
+                    <v-card-title
+                      class="pb-0 px-1 d-flex justify-space-between"
+                    >
+                      <v-btn
+                        icon
+                        :color="unJoueur.getCouleur().getFond()"
+                        @click="ouvrirModificationStatus(unJoueur, unStatus)"
+                      >
+                        <v-icon>mdi-pencil</v-icon>
+                      </v-btn>
+                      <div>
+                        {{ unStatus.getNom() }}
+                      </div>
+                      <v-btn
+                        icon
+                        :color="unJoueur.getCouleur().getFond()"
+                        @click="unJoueur.supprimerStatus(s)"
+                      >
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </v-card-title>
                     <v-card-text class="font-weight-black black--text">
                       <div v-if="unStatus.getDuree() != -1307">
                         Durée: {{ unStatus.getDuree() }}
@@ -268,7 +296,13 @@
           <v-card-title>
             <div>Nouveau joueur</div>
             <v-spacer></v-spacer>
-            <v-btn icon color="error" @click="fermerDialogueAjoutEntiter()">
+            <v-btn
+              icon
+              color="error"
+              @click="
+                fermerDialogueModicationEntiter(), fermerDialogueAjoutEntiter()
+              "
+            >
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
@@ -350,7 +384,13 @@
           <v-card-title class="pb-0">
             <div>Nouveau Status</div>
             <v-spacer></v-spacer>
-            <v-btn icon color="error" @click="fermerDialogueStatus()">
+            <v-btn
+              icon
+              color="error"
+              @click="
+                fermerDialogueStatusModification(), fermerDialogueStatus()
+              "
+            >
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
@@ -439,12 +479,13 @@ export default Vue.extend({
   name: "App",
   data() {
     return {
-      numTour: 0,
+      numTour: 1,
       joueurs: [] as Entiter[],
       ennemis: [] as Entiter[],
       uneEntiter: new Entiter(),
       uneEntiterTampon: new Entiter(),
       unStatus: new Status(),
+      unStatusTampon: new Status(),
       multiStatus: false,
       joueurOuEnnemi: "",
       cestUnJoueur: false,
@@ -469,6 +510,7 @@ export default Vue.extend({
       unJoueur.setMPMax(50);
       unJoueur.setPVMax(30);
       const unStatus = new Status();
+      unStatus.setId();
       unStatus.setDuree(5);
       unStatus.setNom("Poison");
       unStatus.setTypePvMp("p");
@@ -499,11 +541,14 @@ export default Vue.extend({
           this.ennemis.push(this.uneEntiter);
         }
       }
+      this.fermerDialogueAjoutEntiter();
+    },
+    fermerDialogueAjoutEntiter() {
       this.uneEntiterTampon = new Entiter();
       this.dialogueAjoutEntiter = false;
       this.uneEntiter = new Entiter();
     },
-    fermerDialogueAjoutEntiter() {
+    fermerDialogueModicationEntiter() {
       if (this.uneEntiterTampon.getId() != "") {
         if (this.cestUnJoueur == true) {
           const index = this.joueurs.findIndex(
@@ -521,9 +566,6 @@ export default Vue.extend({
           }
         }
       }
-      this.uneEntiterTampon = new Entiter();
-      this.dialogueAjoutEntiter = false;
-      this.uneEntiter = new Entiter();
     },
     supprimerEntiter(uneEntiter: Entiter, liste: string) {
       if (liste == "j") {
@@ -550,6 +592,12 @@ export default Vue.extend({
       this.dialogueAjouterStatus = true;
       this.unStatus = new Status();
       this.uneEntiter = uneEntiter;
+    },
+    ouvrirModificationStatus(uneEntiter: Entiter, unStatus: Status) {
+      this.uneEntiter = uneEntiter;
+      this.unStatus = unStatus;
+      this.unStatusTampon = new Status(unStatus);
+      this.dialogueAjouterStatus = true;
     },
     ouvrirDialogueMultiStatus(jOe: string) {
       if (
@@ -583,7 +631,17 @@ export default Vue.extend({
           }
         }
       } else {
-        this.uneEntiter.getStatus().push(this.unStatus);
+        if (this.unStatusTampon.getId() == "") {
+          this.unStatus.setId();
+          this.uneEntiter.getStatus().push(this.unStatus);
+        } else {
+          const index = this.uneEntiter
+            .getStatus()
+            .findIndex((s: Status) => s.getId() == this.unStatus.getId());
+          if (index != -1) {
+            this.uneEntiter.getStatus().splice(index, 1, this.unStatus);
+          }
+        }
       }
       this.fermerDialogueStatus();
     },
@@ -591,8 +649,19 @@ export default Vue.extend({
       this.dialogueAjouterStatus = false;
       this.unStatus = new Status();
       this.uneEntiter = new Entiter();
+      this.unStatusTampon = new Status();
       this.multiStatus = false;
       this.joueurOuEnnemi = "";
+    },
+    fermerDialogueStatusModification() {
+      if (this.unStatusTampon.getId() != "") {
+        const index = this.uneEntiter
+          .getStatus()
+          .findIndex((s: Status) => s.getId() == this.uneEntiterTampon.getId());
+        if (index != -1) {
+          this.uneEntiter.getStatus().splice(index, 1, this.unStatusTampon);
+        }
+      }
     },
     passerTour() {
       this.numTour += 1;
@@ -604,7 +673,7 @@ export default Vue.extend({
       }
     },
     resetTour() {
-      this.numTour = 0;
+      this.numTour = 1;
     },
     snackbarVisible(text: string) {
       this.snakbar_text = text;

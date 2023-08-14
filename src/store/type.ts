@@ -1,4 +1,5 @@
 export class Status {
+  id: string;
   nom: string;
   dureeMax: number;
   duree: number;
@@ -9,12 +10,14 @@ export class Status {
   constructor(unStatus: Status);
   constructor(...args: any[]) {
     if (args.length == 1) {
+      this.id = args[0].id;
       this.nom = args[0].nom;
       this.dureeMax = args[0].dureeMax;
       this.duree = args[0].duree;
       this.effet = args[0].effet;
       this.pvmp = args[0].pvmp;
     } else {
+      this.id = "";
       this.nom = "";
       this.dureeMax = 0;
       this.duree = 0;
@@ -23,6 +26,9 @@ export class Status {
     }
   }
 
+  getId() {
+    return this.id;
+  }
   getNom() {
     return this.nom;
   }
@@ -39,6 +45,9 @@ export class Status {
     return this.pvmp;
   }
 
+  setId() {
+    this.id = new Date().getTime() + "";
+  }
   setNom(nom: string) {
     this.nom = nom;
   }
