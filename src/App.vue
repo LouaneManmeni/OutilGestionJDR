@@ -533,23 +533,19 @@ export default Vue.extend({
       //Pour que se soit de vrais number
       this.uneEntiter.setPVMax(this.uneEntiter.getPvMax());
       this.uneEntiter.setMPMax(this.uneEntiter.getMpMax());
-      let JouE;
       if (this.uneEntiterTampon.getId() == "") {
         this.uneEntiter.setId();
         if (this.cestUnJoueur == true) {
           this.joueurs.push(this.uneEntiter);
-          JouE = "J";
+          this.uneEntiter.setJouE("J");
         } else {
           this.ennemis.push(this.uneEntiter);
-          JouE = "E";
+          this.uneEntiter.setJouE("E");
         }
       }
-      let uneEntiter: any = this.uneEntiter;
-      uneEntiter.JouE = JouE;
-      console.log(uneEntiter);
       axios.post(this.$store.state.serverphp + "jeu.php", {
         action: "ENREGISTRER_ENTITER",
-        entiter: uneEntiter,
+        entiter: this.uneEntiter,
       });
 
       this.fermerDialogueAjoutEntiter();
@@ -632,13 +628,22 @@ export default Vue.extend({
       this.unStatus.setDuree(this.unStatus.getDureeMax());
       this.unStatus.setEffet(this.unStatus.getEffet());
       if (this.multiStatus == true) {
+        this.unStatus.setId();
         if (this.joueurOuEnnemi == "j") {
           for (const uneEntiter of this.joueurs) {
             uneEntiter.getStatus().push(this.unStatus);
+            axios.post(this.$store.state.serverphp + "jeu.php", {
+              action: "ENREGISTRER_STATUS",
+              entiter: uneEntiter,
+            });
           }
         } else if (this.joueurOuEnnemi == "e") {
           for (const uneEntiter of this.ennemis) {
             uneEntiter.getStatus().push(this.unStatus);
+            axios.post(this.$store.state.serverphp + "jeu.php", {
+              action: "ENREGISTRER_STATUS",
+              entiter: uneEntiter,
+            });
           }
         }
       } else {
@@ -653,6 +658,14 @@ export default Vue.extend({
             this.uneEntiter.getStatus().splice(index, 1, this.unStatus);
           }
         }
+        axios
+          .post(this.$store.state.serverphp + "jeu.php", {
+            action: "ENREGISTRER_STATUS",
+            entiter: this.uneEntiter,
+          })
+          .then((response) => {
+            console.log(response);
+          });
       }
       this.fermerDialogueStatus();
     },

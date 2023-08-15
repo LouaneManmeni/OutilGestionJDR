@@ -122,6 +122,7 @@ export class Entiter {
   modifcateurMp: string;
   status: Status[];
   couleurFiche: CarteCouleur;
+  JouE: string;
 
   constructor();
   constructor(uneEntiter: Entiter);
@@ -137,6 +138,7 @@ export class Entiter {
         return new Status(s);
       });
       this.couleurFiche = new CarteCouleur(args[0].couleurFiche);
+      this.JouE = args[0].JouE;
     } else {
       this.id = "";
       this.nom = "";
@@ -146,6 +148,7 @@ export class Entiter {
       this.mpMax = 0;
       this.status = [];
       this.couleurFiche = new CarteCouleur();
+      this.JouE = "";
     }
     this.modifcateurMp = "";
     this.modificateurPv = "";
@@ -175,6 +178,9 @@ export class Entiter {
   getCouleur() {
     return this.couleurFiche;
   }
+  getJouE() {
+    return this.JouE;
+  }
 
   setId() {
     this.id = new Date().getTime() + "";
@@ -189,6 +195,9 @@ export class Entiter {
   setMPMax(mp: number) {
     this.mpMax = mp * 1;
     this.mp = mp * 1;
+  }
+  setJouE(JouE: string) {
+    this.JouE = JouE;
   }
 
   modifierPV(modificateur: number) {

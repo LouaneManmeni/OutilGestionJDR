@@ -75,31 +75,59 @@ if ($action=="ENREGISTRER_ENTITER")
         $sql = $cmd->MakeInsertQuery("entiter");
     }
     $res=$db->query($sql);
+
+    $rep["sql"]=enregistrerStatus($db,$entiter);
 }
 
-function enregistrerStatus($db,$unStatus)
+if($action=="ENREGISTRER_STATUS")
 {
-    $idStatus=$unStatus["id"];
-    $sql="SELECT COUNT(*) as NB FROM status WHERE id='$idStatus'";
-    $res=$db->query($sql);
-    $row=$res->fetch_assoc();
+    $rep["sql"]=enregistrerStatus($db,$postData["entiter"]);
+}
 
-    $cmd= new sqlCmd();
-    $cmd->Add("nom",$unStatus["nom"],"s");
-    $cmd->Add("dureeMax",$unStatus["dureeMax"],"n");
-    $cmd->Add("duree",$unStatus["duree"],"n");
-    $cmd->Add("effet",$unStatus["effet"],"s");
-    $cmd->Add("pvmp",$unStatus["pvmp"],"s");
-    if ($row["NB"]>0)
-    {
-        $sql = $cmd->MakeUpdateQuery("status","id='$idStatus'");
+function enregistrerStatus($db,$uneEntiter)
+{
+    $s=array();
+    $idEntiter=$uneEntiter["id"];
+    foreach($uneEntiter["status"] as $unStatus)
+    {   
+        $idStatus=$unStatus["id"];
+        $sql="SELECT COUNT(*) as NB FROM status WHERE id='$idStatus'";
+        $res=$db->query($sql);
+        $row=$res->fetch_assoc();
+        
+        $cmd= new sqlCmd();
+        $cmd->Add("nom",$unStatus["nom"],"s");
+        $cmd->Add("dureeMax",$unStatus["dureeMax"],"n");
+        $cmd->Add("duree",$unStatus["duree"],"n");
+        $cmd->Add("effet",$unStatus["effet"],"s");
+        $cmd->Add("pvmp",$unStatus["pvmp"],"s");
+        if ($row["NB"]>0)
+        {
+            $sql = $cmd->MakeUpdateQuery("status","id='$idStatus'");
+        }
+        else
+        {
+            $cmd->Add("id",$idStatus,"s");
+            $sql = $cmd->MakeInsertQuery("status");
+        }
+        $s[]=$sql;
+        $res=$db->query($sql);
+
+        $sql="SELECT COUNT(*) as NB FROM effet WHERE idEntiter='$idEntiter' AND idStatus='$idStatus'";
+        $res=$db->query($sql);
+        $row=$res->fetch_assoc();
+
+        if ($row["NB"]==0)
+        {   
+            $cmd= new sqlCmd();
+            $cmd->Add("idEntiter",$idEntiter,"s");
+            $cmd->Add("idStatus",$idStatus,"s");
+            $sql = $cmd->MakeInsertQuery("effet");
+            $s[]=$sql;
+            $res=$db->query($sql);
+        }
     }
-    else
-    {
-        $cmd->Add("id",$idStatus,"s");
-        $sql = $cmd->MakeInsertQuery("status");
-    }
-    $res=$db->query($sql);
+    return $s;
 }
 
 $db->close();
