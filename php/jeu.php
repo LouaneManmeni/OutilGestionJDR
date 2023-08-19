@@ -130,5 +130,28 @@ function enregistrerStatus($db,$uneEntiter)
     return $s;
 }
 
+if($action=="SUPPRIMER_ENTITER")
+{
+    $idEntiter=$postData["idEntiter"];
+    $sql="SELECT idStatus FROM effet WHERE idEntiter='$idEntiter'";
+    $res=$db->query($sql);
+    while($row=$res->fetch_assoc())
+    {
+        $idStatus=$row["idStatus"];
+        $sql="SELECT COUNT(*) as NB FROM effet WHERE idStatus='$idStatus'";
+        $res2=$db->query($sql);
+        $row2=$res2->fetch_assoc();
+        $sql="DELETE FROM effet WHERE idEntiter='$idEntiter' AND idStatus='$idStatus'";
+        $re3s=$db->query($sql);
+        if ($row2["NB"]==1){
+            $sql="DELETE FROM status WHERE id='$idStatus'";
+            $res4=$db->query($sql);
+        }
+    }
+    $sql="DELETE FROM ENTITER WHERE id='$idEntiter'";
+    $res2=$db->query($sql);
+
+}
+
 $db->close();
 echo json_encode($rep);

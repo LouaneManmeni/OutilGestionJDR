@@ -590,6 +590,10 @@ export default Vue.extend({
           this.ennemis.splice(index, 1);
         }
       }
+      axios.post(this.$store.state.serverphp + "jeu.php", {
+        action: "SUPPRIMER_ENTITER",
+        idEntiter: uneEntiter.getId(),
+      });
     },
     changezCouleur(index: number) {
       this.uneEntiter.getCouleur().setCouleur(index);
