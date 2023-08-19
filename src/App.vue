@@ -662,14 +662,10 @@ export default Vue.extend({
             this.uneEntiter.getStatus().splice(index, 1, this.unStatus);
           }
         }
-        axios
-          .post(this.$store.state.serverphp + "jeu.php", {
-            action: "ENREGISTRER_STATUS",
-            entiter: this.uneEntiter,
-          })
-          .then((response) => {
-            console.log(response);
-          });
+        axios.post(this.$store.state.serverphp + "jeu.php", {
+          action: "ENREGISTRER_STATUS",
+          entiter: this.uneEntiter,
+        });
       }
       this.fermerDialogueStatus();
     },
@@ -695,9 +691,17 @@ export default Vue.extend({
       this.numTour += 1;
       for (const unJoueur of this.joueurs) {
         unJoueur.passerUnTour();
+        axios.post(this.$store.state.serverphp + "jeu.php", {
+          action: "ENREGISTRER_ENTITER",
+          entiter: unJoueur,
+        });
       }
       for (const unEnnemie of this.ennemis) {
         unEnnemie.passerUnTour();
+        axios.post(this.$store.state.serverphp + "jeu.php", {
+          action: "ENREGISTRER_ENTITER",
+          entiter: unEnnemie,
+        });
       }
     },
     resetTour() {

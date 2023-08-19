@@ -203,20 +203,20 @@ export class Entiter {
 
   modifierPV(modificateur: number) {
     if (isNaN(modificateur) == false) {
-      this.pv += modificateur * 1;
+      this.pv = this.pv * 1 + modificateur * 1;
       this.modificateurPv = "";
     }
   }
   modifierMP(modificateur: number) {
     if (isNaN(modificateur) == false) {
-      this.mp += modificateur * 1;
+      this.mp = this.mp * 1 + modificateur * 1;
       this.modifcateurMp = "";
     }
   }
   supprimerStatus(index: number) {
     axios
       .post(store.state.serverphp + "jeu.php", {
-        action: "SUPPRIMER_ENTITER",
+        action: "SUPPRIMER_STATUS",
         idStatus: this.status[index].getId(),
         idEntiter: this.getId(),
       })
@@ -247,7 +247,15 @@ export class Entiter {
       if (indexASupprimer.length != 0) {
         i = indexASupprimer.length - 1;
         while (i >= 0) {
-          this.status.splice(indexASupprimer[i], 1);
+          axios
+            .post(store.state.serverphp + "jeu.php", {
+              action: "SUPPRIMER_STATUS",
+              idStatus: this.status[indexASupprimer[i]].getId(),
+              idEntiter: this.getId(),
+            })
+            .then(() => {
+              this.status.splice(indexASupprimer[i], 1);
+            });
           i--;
         }
       }

@@ -76,12 +76,12 @@ if ($action=="ENREGISTRER_ENTITER")
     }
     $res=$db->query($sql);
 
-    $rep["sql"]=enregistrerStatus($db,$entiter);
+    enregistrerStatus($db,$entiter);
 }
 
 if($action=="ENREGISTRER_STATUS")
 {
-    $rep["sql"]=enregistrerStatus($db,$postData["entiter"]);
+    enregistrerStatus($db,$postData["entiter"]);
 }
 
 function enregistrerStatus($db,$uneEntiter)
@@ -127,7 +127,6 @@ function enregistrerStatus($db,$uneEntiter)
             $res=$db->query($sql);
         }
     }
-    return $s;
 }
 
 if($action=="SUPPRIMER_ENTITER")
