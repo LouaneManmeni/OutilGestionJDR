@@ -475,7 +475,7 @@ import Vue from "vue";
 import { Entiter, Status } from "../store/type";
 
 export default Vue.extend({
-  name: "App",
+  name: "Jeu",
   data() {
     return {
       unsubcribe: null as any,
