@@ -1,3 +1,4 @@
+import axios from "axios";
 import store from ".";
 
 export class Status {
@@ -213,7 +214,15 @@ export class Entiter {
     }
   }
   supprimerStatus(index: number) {
-    this.status.splice(index, 1);
+    axios
+      .post(store.state.serverphp + "jeu.php", {
+        action: "SUPPRIMER_ENTITER",
+        idStatus: this.status[index].getId(),
+        idEntiter: this.getId(),
+      })
+      .then(() => {
+        this.status.splice(index, 1);
+      });
   }
 
   passerUnTour() {

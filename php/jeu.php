@@ -138,19 +138,32 @@ if($action=="SUPPRIMER_ENTITER")
     while($row=$res->fetch_assoc())
     {
         $idStatus=$row["idStatus"];
-        $sql="SELECT COUNT(*) as NB FROM effet WHERE idStatus='$idStatus'";
-        $res2=$db->query($sql);
-        $row2=$res2->fetch_assoc();
-        $sql="DELETE FROM effet WHERE idEntiter='$idEntiter' AND idStatus='$idStatus'";
-        $re3s=$db->query($sql);
-        if ($row2["NB"]==1){
-            $sql="DELETE FROM status WHERE id='$idStatus'";
-            $res4=$db->query($sql);
-        }
+        supprimerUnStatus($db,$idStatus,$idEntiter);
     }
     $sql="DELETE FROM ENTITER WHERE id='$idEntiter'";
     $res2=$db->query($sql);
 
+}
+
+function supprimerUnStatus($db,$idStatus,$idEntiter)
+{
+    $sql="SELECT COUNT(*) as NB FROM effet WHERE idStatus='$idStatus'";
+    $res2=$db->query($sql);
+    $row2=$res2->fetch_assoc();
+    $sql="DELETE FROM effet WHERE idEntiter='$idEntiter' AND idStatus='$idStatus'";
+    $re3s=$db->query($sql);
+    if ($row2["NB"]==1)
+    {
+        $sql="DELETE FROM status WHERE id='$idStatus'";
+        $res4=$db->query($sql);
+    }
+}
+
+if ($action=="SUPPRIMER_STATUS")
+{
+    $idStatus=$postData["idStatus"];
+    $idEntiter=$postData["idEntiter"];
+    supprimerUnStatus($db,$idStatus,$idEntiter);
 }
 
 $db->close();
