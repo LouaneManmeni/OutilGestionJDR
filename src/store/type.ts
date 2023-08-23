@@ -1,6 +1,30 @@
 import axios from "axios";
 import store from ".";
 
+export class Utilisateur {
+  private id: number;
+  private nom: string;
+
+  constructor();
+  constructor(unUtilisateur: Utilisateur);
+  constructor(...args: any[]) {
+    if (args.length == 1) {
+      this.id = args[0].id;
+      this.nom = args[0].nom;
+    } else {
+      this.id = -1;
+      this.nom = "";
+    }
+  }
+
+  getId() {
+    return this.id;
+  }
+  getNom() {
+    return this.nom;
+  }
+}
+
 export class Status {
   id: string;
   nom: string;

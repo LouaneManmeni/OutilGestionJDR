@@ -1,7 +1,7 @@
 import axios from "axios";
 import Vue from "vue";
 import Vuex from "vuex";
-import { CarteCouleur } from "./type";
+import { CarteCouleur, Utilisateur } from "./type";
 
 Vue.use(Vuex);
 const debug = process.env.NODE_ENV === "development";
@@ -10,6 +10,7 @@ export default new Vuex.Store({
   state: {
     serverphp: debug ? "http://localhost/aide/php/" : "/php/",
     couleurs: [] as CarteCouleur[],
+    utilisateur: new Utilisateur(),
   },
   getters: {},
   mutations: {
@@ -17,6 +18,9 @@ export default new Vuex.Store({
       state.couleurs = couleurs.map((c: CarteCouleur) => {
         return new CarteCouleur(c);
       });
+    },
+    majUtilisateur(state, unUtilisateur) {
+      state.utilisateur = new Utilisateur(unUtilisateur);
     },
   },
   actions: {

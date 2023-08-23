@@ -1,12 +1,21 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
+import store from "../store";
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: "/",
+    path: "/Jeu",
     component: () => import("@/views/Jeu.vue"),
+  },
+  {
+    path: "/",
+    component: () => import("@/views/JeuDeRole.vue"),
+  },
+  {
+    path: "/Connexion",
+    component: () => import("@/views/Connexion.vue"),
   },
 ];
 
@@ -14,13 +23,13 @@ const router = new VueRouter({
   routes,
 });
 
-/* router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
   if (to.path.startsWith("/Connexion")) {
     next();
   } else {
     let id = store.state.utilisateur.getId();
     if (id == null) id = -1;
-    if (id > 0) {
+    if (id > -1) {
       next();
     } else {
       next({
@@ -29,6 +38,6 @@ const router = new VueRouter({
       });
     }
   }
-}); */
+});
 
 export default router;
