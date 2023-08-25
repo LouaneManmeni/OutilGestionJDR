@@ -508,6 +508,7 @@ export default Vue.extend({
       axios
         .post(this.$store.state.serverphp + "jeu.php", {
           action: "INI",
+          idJDR: this.$store.state.idJDR,
         })
         .then((response) => {
           this.joueurs = response.data.joueurs.map((j: Entiter) => {

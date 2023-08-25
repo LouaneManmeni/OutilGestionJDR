@@ -11,16 +11,20 @@ export default new Vuex.Store({
     serverphp: debug ? "http://localhost/aide/php/" : "/php/",
     couleurs: [] as CarteCouleur[],
     utilisateur: new Utilisateur(),
+    idJDR: "",
   },
   getters: {},
   mutations: {
-    majCouleur(state, couleurs) {
+    majCouleur(state, couleurs: CarteCouleur[]) {
       state.couleurs = couleurs.map((c: CarteCouleur) => {
         return new CarteCouleur(c);
       });
     },
-    majUtilisateur(state, unUtilisateur) {
+    majUtilisateur(state, unUtilisateur: Utilisateur) {
       state.utilisateur = new Utilisateur(unUtilisateur);
+    },
+    majIdJDR(state, id: string) {
+      state.idJDR = id;
     },
   },
   actions: {

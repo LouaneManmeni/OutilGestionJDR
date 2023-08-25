@@ -6,14 +6,18 @@
       class="d-flex align-center justify-space-between"
     >
     </v-card>
-    <div>
+    <div class="d-flex">
       <v-card
         v-for="(unJeu, j) in listeJeuDeRole"
         :key="j + 'JeuDeRole'"
         color="primary"
         min-width="10px"
+        class="ma-2"
+        @click="choixJDR(unJeu.id)"
       >
-        {{ unJeu.nom }}
+        <v-card-title>
+          {{ unJeu.nom }}
+        </v-card-title>
       </v-card>
     </div>
   </div>
@@ -42,6 +46,10 @@ export default Vue.extend({
         .then((response) => {
           this.listeJeuDeRole = response.data.jeuDeRole;
         });
+    },
+    choixJDR(idJDR: string) {
+      this.$store.commit("majIdJDR", idJDR);
+      this.$router.push("/Jeu");
     },
     snackbarVisible(text: string) {
       this.snakbar_text = text;
