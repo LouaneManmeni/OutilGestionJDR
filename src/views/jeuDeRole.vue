@@ -13,7 +13,7 @@
         color="primary"
         min-width="10px"
         class="ma-2"
-        @click="choixJDR(unJeu.id)"
+        @click="choixJDR(unJeu)"
       >
         <v-card-title>
           {{ unJeu.nom }}
@@ -47,8 +47,8 @@ export default Vue.extend({
           this.listeJeuDeRole = response.data.jeuDeRole;
         });
     },
-    choixJDR(idJDR: string) {
-      this.$store.commit("majIdJDR", idJDR);
+    choixJDR(JDR: any) {
+      this.$store.commit("majJDR", JDR);
       this.$router.push("/Jeu");
     },
     snackbarVisible(text: string) {

@@ -24,5 +24,15 @@ if ($action=="INITIALISATION")
     $rep["jeuDeRole"]=$jeuDeRole;
 }
 
+if ($action=="NB_TOUR")
+{
+    $idJDR=$postData["idJDR"];
+    $nbTour=$postData["numTour"];
+    $cmd= new sqlCmd();
+    $cmd->Add("NbTour",$nbTour,"n");
+    $sql = $cmd->MakeUpdateQuery("jeuderole","id='$idJDR'");
+    $res=$db->query($sql);
+}
+
 $db->close();
 echo json_encode($rep);

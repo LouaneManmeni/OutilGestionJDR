@@ -9,9 +9,10 @@ $db=CoBD();
 
 if ($action=="INI")
 {
+    $idJDR=$postData["idJDR"];
     $joueurs=array();
     $ennemis=array();
-    $sql="SELECT * FROM entiter";
+    $sql="SELECT * FROM entiter WHERE JDR='$idJDR'";
     $res=$db->query($sql);
     while($row=$res->fetch_assoc())
     {
@@ -52,6 +53,7 @@ if ($action=="ENREGISTRER_ENTITER")
     $entiter=$postData["entiter"];
     $idJoueur=$entiter["id"];
     $idCouleur=$entiter["couleurFiche"]["id"];
+    $idJDR=$postData["idJDR"];
 
     $sql="SELECT COUNT(*) as NB FROM entiter WHERE id='$idJoueur'";
     $res=$db->query($sql);
@@ -65,6 +67,7 @@ if ($action=="ENREGISTRER_ENTITER")
     $cmd->Add("mp",$entiter["mp"],"n");
     $cmd->Add("JouE",$entiter["JouE"],"s");
     $cmd->Add("couleurId",$idCouleur,"n");
+    $cmd->Add("JDR",$idJDR,"s");
     if ($row["NB"]>0)
     {
         $sql = $cmd->MakeUpdateQuery("entiter","id='$idJoueur'");
@@ -87,6 +90,7 @@ if($action=="ENREGISTRER_STATUS")
 function enregistrerStatus($db,$uneEntiter)
 {
     $s=array();
+    $idJDR=$postData["idJDR"];
     $idEntiter=$uneEntiter["id"];
     foreach($uneEntiter["status"] as $unStatus)
     {   
@@ -101,6 +105,7 @@ function enregistrerStatus($db,$uneEntiter)
         $cmd->Add("duree",$unStatus["duree"],"n");
         $cmd->Add("effet",$unStatus["effet"],"s");
         $cmd->Add("pvmp",$unStatus["pvmp"],"s");
+        $cmd->Add("JDR",$idJDR,"s");
         if ($row["NB"]>0)
         {
             $sql = $cmd->MakeUpdateQuery("status","id='$idStatus'");

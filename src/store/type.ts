@@ -249,7 +249,7 @@ export class Entiter {
       });
   }
 
-  passerUnTour() {
+  passerUnTour(lesStatusDejaUtiliser: Status[]) {
     if (this.status.length != 0) {
       let i = 0;
       const indexASupprimer: number[] = [];
@@ -260,8 +260,12 @@ export class Entiter {
         } else if (typePvMp == "m") {
           this.modifierMP(unStatus.getEffet());
         }
-        if (unStatus.getDuree() != -1307) {
+        const dejContabiliser = lesStatusDejaUtiliser.find(
+          (s: Status) => s.getId() == unStatus.getId()
+        );
+        if (unStatus.getDuree() != -1307 && dejContabiliser === undefined) {
           unStatus.passerTour();
+          lesStatusDejaUtiliser.push(unStatus);
         }
         if (unStatus.getDuree() <= 0 && unStatus.getDuree() != -1307) {
           indexASupprimer.push(i);
@@ -284,5 +288,6 @@ export class Entiter {
         }
       }
     }
+    return lesStatusDejaUtiliser;
   }
 }

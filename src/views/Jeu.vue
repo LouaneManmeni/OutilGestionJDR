@@ -547,6 +547,7 @@ export default Vue.extend({
       axios.post(this.$store.state.serverphp + "jeu.php", {
         action: "ENREGISTRER_ENTITER",
         entiter: this.uneEntiter,
+        idJDR: this.$store.state.idJDR,
       });
 
       this.fermerDialogueAjoutEntiter();
@@ -640,6 +641,7 @@ export default Vue.extend({
             axios.post(this.$store.state.serverphp + "jeu.php", {
               action: "ENREGISTRER_STATUS",
               entiter: uneEntiter,
+              idJDR: this.$store.state.idJDR,
             });
           }
         } else if (this.joueurOuEnnemi == "e") {
@@ -648,6 +650,7 @@ export default Vue.extend({
             axios.post(this.$store.state.serverphp + "jeu.php", {
               action: "ENREGISTRER_STATUS",
               entiter: uneEntiter,
+              idJDR: this.$store.state.idJDR,
             });
           }
         }
@@ -690,23 +693,35 @@ export default Vue.extend({
     },
     passerTour() {
       this.numTour += 1;
+      let lesStatusDejaUtiliser: Status[] = [];
       for (const unJoueur of this.joueurs) {
-        unJoueur.passerUnTour();
+        lesStatusDejaUtiliser = unJoueur.passerUnTour(lesStatusDejaUtiliser);
         axios.post(this.$store.state.serverphp + "jeu.php", {
           action: "ENREGISTRER_ENTITER",
           entiter: unJoueur,
+          idJDR: this.$store.state.idJDR,
         });
       }
       for (const unEnnemie of this.ennemis) {
-        unEnnemie.passerUnTour();
+        lesStatusDejaUtiliser = unEnnemie.passerUnTour(lesStatusDejaUtiliser);
         axios.post(this.$store.state.serverphp + "jeu.php", {
           action: "ENREGISTRER_ENTITER",
           entiter: unEnnemie,
+          idJDR: this.$store.state.idJDR,
         });
       }
+      this.nbTourChangement();
     },
     resetTour() {
       this.numTour = 1;
+      this.nbTourChangement();
+    },
+    nbTourChangement() {
+      axios.post(this.$store.state.serverphp + "jeuDeRole.php", {
+        action: "NB_TOUR",
+        idJDR: this.$store.state.idJDR,
+        numTour: this.numTour,
+      });
     },
     snackbarVisible(text: string) {
       this.snakbar_text = text;
@@ -723,6 +738,9 @@ export default Vue.extend({
       switch (mutation.type) {
         case "majCouleur":
           this.listeCouleur = this.$store.state.couleurs;
+          break;
+        case "majJDR":
+          this.numTour = this.$store.state.nbTour;
       }
     });
   },

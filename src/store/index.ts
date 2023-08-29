@@ -12,6 +12,7 @@ export default new Vuex.Store({
     couleurs: [] as CarteCouleur[],
     utilisateur: new Utilisateur(),
     idJDR: "",
+    nbTour: 1,
   },
   getters: {},
   mutations: {
@@ -23,8 +24,9 @@ export default new Vuex.Store({
     majUtilisateur(state, unUtilisateur: Utilisateur) {
       state.utilisateur = new Utilisateur(unUtilisateur);
     },
-    majIdJDR(state, id: string) {
-      state.idJDR = id;
+    majJDR(state, JDR: any) {
+      state.idJDR = JDR.id;
+      state.nbTour = JDR.nbTour;
     },
   },
   actions: {
