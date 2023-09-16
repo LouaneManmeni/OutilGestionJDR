@@ -691,11 +691,13 @@ export default Vue.extend({
         }
       }
     },
-    passerTour() {
+    async passerTour() {
       this.numTour += 1;
       let lesStatusDejaUtiliser: Status[] = [];
       for (const unJoueur of this.joueurs) {
-        lesStatusDejaUtiliser = unJoueur.passerUnTour(lesStatusDejaUtiliser);
+        lesStatusDejaUtiliser = await unJoueur.passerUnTour(
+          lesStatusDejaUtiliser
+        );
         axios.post(this.$store.state.serverphp + "jeu.php", {
           action: "ENREGISTRER_ENTITER",
           entiter: unJoueur,
@@ -703,7 +705,9 @@ export default Vue.extend({
         });
       }
       for (const unEnnemie of this.ennemis) {
-        lesStatusDejaUtiliser = unEnnemie.passerUnTour(lesStatusDejaUtiliser);
+        lesStatusDejaUtiliser = await unEnnemie.passerUnTour(
+          lesStatusDejaUtiliser
+        );
         axios.post(this.$store.state.serverphp + "jeu.php", {
           action: "ENREGISTRER_ENTITER",
           entiter: unEnnemie,

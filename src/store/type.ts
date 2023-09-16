@@ -249,7 +249,7 @@ export class Entiter {
       });
   }
 
-  passerUnTour(lesStatusDejaUtiliser: Status[]) {
+  async passerUnTour(lesStatusDejaUtiliser: Status[]) {
     if (this.status.length != 0) {
       let i = 0;
       const indexASupprimer: number[] = [];
@@ -275,7 +275,7 @@ export class Entiter {
       if (indexASupprimer.length != 0) {
         i = indexASupprimer.length - 1;
         while (i >= 0) {
-          axios
+          await axios
             .post(store.state.serverphp + "jeu.php", {
               action: "SUPPRIMER_STATUS",
               idStatus: this.status[indexASupprimer[i]].getId(),
@@ -283,8 +283,8 @@ export class Entiter {
             })
             .then(() => {
               this.status.splice(indexASupprimer[i], 1);
+              i--;
             });
-          i--;
         }
       }
     }
