@@ -1,11 +1,5 @@
 <template>
   <div>
-    <v-card
-      style="height: 50px"
-      color="purple lighten-5"
-      class="d-flex align-center justify-space-between"
-    >
-    </v-card>
     <div class="d-flex">
       <v-card
         v-for="(unJeu, j) in listeJeuDeRole"

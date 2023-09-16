@@ -1,11 +1,5 @@
 <template>
   <div>
-    <v-card
-      style="height: 50px"
-      color="purple lighten-5"
-      class="d-flex align-center justify-space-between"
-    >
-    </v-card>
     <v-row class="mt-5">
       <v-col>
         <v-img
@@ -48,6 +42,7 @@
 </template>
 
 <script lang="ts">
+import { dbjdr } from "@/plugins/variables";
 import axios from "axios";
 import Vue from "vue";
 
@@ -69,9 +64,13 @@ export default Vue.extend({
           identifiant: this.identifiant,
           motdepasse: this.motdepasse,
         })
-        .then((response) => {
+        .then(async (response) => {
           if (response.data.authentification == "oui") {
             this.$store.commit("majUtilisateur", response.data.utilisateur);
+            const db = await dbjdr();
+            const store = db.transaction("co", "readwrite").store;
+            await store.put(response.data.utilisateur);
+            db.close();
             this.$router.push("/");
           } else {
             this.snackbarVisible("Identifiant ou mot de passe incorect");
